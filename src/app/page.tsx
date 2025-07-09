@@ -1,103 +1,332 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React, { useState, useEffect } from 'react';
+import { MessageCircle, Database, FileText, Trash2 } from 'lucide-react';
+import UrlInput, { UrlProcessing } from '@/components/url-input/UrlInput';
+import ChatContainer from '@/components/chat/ChatContainer';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+// LocalStorage removed - using only Pinecone stats
+
+interface ProcessedDocument {
+  url: string;
+  title: string;
+  chunksCount: number;
+  timestamp: Date;
+  vectorId?: string;
+}
+
+const HomePage: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [processing, setProcessing] = useState<{
+    step: 'scraping' | 'embedding' | 'success' | 'error';
+    message: string;
+    url?: string;
+  } | null>(null);
+  const [documents, setDocuments] = useState<ProcessedDocument[]>([]);
+  const [showChat, setShowChat] = useState(false);
+  const [pineconeStats, setPineconeStats] = useState<{
+    totalVectors: number;
+    loading: boolean;
+  }>({ totalVectors: 0, loading: true });
+
+  // Load Pinecone stats
+  useEffect(() => {
+    const loadPineconeStats = async () => {
+      try {
+        const response = await fetch('/api/documents');
+        const data = await response.json();
+        setPineconeStats({
+          totalVectors: data.totalVectors || 0,
+          loading: false,
+        });
+        console.log('Pinecone stats:', data);
+      } catch (error) {
+        console.error('Pinecone stats error:', error);
+        setPineconeStats(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    loadPineconeStats();
+  }, []);
+
+  const handleUrlSubmit = async (url: string) => {
+    setLoading(true);
+    setProcessing({
+      step: 'scraping',
+      message: 'Web sayfası içeriği çekiliyor...',
+      url,
+    });
+
+    try {
+      // 1. Web scraping
+      const scrapeResponse = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!scrapeResponse.ok) {
+        const error = await scrapeResponse.json();
+        throw new Error(error.error || 'Scraping başarısız');
+      }
+
+      const scrapeData = await scrapeResponse.json();
+      const scrapedContent = scrapeData.data;
+
+      // 2. Embedding ve kaydetme
+      setProcessing({
+        step: 'embedding',
+        message: 'İçerik işleniyor ve vektör veritabanına kaydediliyor...',
+        url,
+      });
+
+      const embedResponse = await fetch('/api/embed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: scrapedContent }),
+      });
+
+      if (!embedResponse.ok) {
+        const error = await embedResponse.json();
+        throw new Error(error.error || 'Embedding başarısız');
+      }
+
+      const embedData = await embedResponse.json();
+
+      // Başarılı
+      setProcessing({
+        step: 'success',
+        message: `Başarıyla kaydedildi! ${embedData.chunksProcessed} parça işlendi.`,
+        url,
+      });
+
+      // Döküman listesine ekle (session için)
+      const newDocument: ProcessedDocument = {
+        url: scrapedContent.url,
+        title: scrapedContent.title,
+        chunksCount: embedData.chunksProcessed,
+        timestamp: new Date(),
+        vectorId: embedData.vectorId,
+      };
+
+      setDocuments(prev => [newDocument, ...prev]);
+      
+      // Pinecone stats'ları yenile
+      const response = await fetch('/api/documents');
+      const data = await response.json();
+      setPineconeStats({
+        totalVectors: data.totalVectors || 0,
+        loading: false,
+      });
+
+      // 3 saniye sonra processing'i temizle
+      setTimeout(() => {
+        setProcessing(null);
+      }, 3000);
+
+    } catch (error) {
+      console.error('Hata:', error);
+      setProcessing({
+        step: 'error',
+        message: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',
+        url,
+      });
+
+      // 5 saniye sonra error'u temizle
+      setTimeout(() => {
+        setProcessing(null);
+      }, 5000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleChat = () => {
+    setShowChat(!showChat);
+  };
+
+  const handleDeleteDocument = async (url: string) => {
+    try {
+      // UI'dan sil (session için)
+      setDocuments(prev => prev.filter(doc => doc.url !== url));
+      
+      // İsteğe bağlı: Pinecone'dan da silebilir (API call gerekir)
+      // await fetch('/api/documents/delete', { ... });
+      
+    } catch (error) {
+      console.error('Döküman silme hatası:', error);
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <FileText className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Döküman Sohbet Uygulaması
+                </h1>
+                <p className="text-gray-600">
+                  Web sayfalarından bilgi çekerek AI ile sohbet edin
+                </p>
+              </div>
+            </div>
+            
+            {(documents.length > 0 || pineconeStats.totalVectors > 0) && (
+              <Button onClick={handleToggleChat}>
+                <MessageCircle className="h-4 w-4 mr-2" />
+                {showChat ? 'Döküman Ekle' : 'Sohbet Et'}
+              </Button>
+            )}
+          </div>
         </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        {!showChat ? (
+          <div className="space-y-6">
+            {/* URL Input */}
+            <UrlInput onUrlSubmit={handleUrlSubmit} loading={loading} />
+
+            {/* Processing Status */}
+            {processing && (
+              <UrlInput.Processing status={processing} />
+            )}
+
+            {/* Documents List */}
+            {documents.length > 0 && (
+              <Card>
+                <Card.Header>
+                  <Card.Title className="flex items-center gap-2">
+                    <Database className="h-5 w-5 text-green-600" />
+                    Kaydedilmiş Dökümanlar ({documents.length})
+                  </Card.Title>
+                </Card.Header>
+                
+                <Card.Content>
+                  <div className="space-y-3">
+                    {documents.map((doc, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start justify-between p-3 bg-gray-50 rounded-lg"
+                      >
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 line-clamp-1">
+                            {doc.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 line-clamp-1 mt-1">
+                            {doc.url}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {doc.chunksCount} parça • {new Intl.DateTimeFormat('tr-TR', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              day: '2-digit',
+                              month: '2-digit',
+                            }).format(doc.timestamp)}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 ml-4">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-gray-500">Aktif</span>
+                          <button
+                            onClick={() => handleDeleteDocument(doc.url)}
+                            className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                            title="Dökümanı sil"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card.Content>
+              </Card>
+            )}
+
+            {/* Pinecone Stats */}
+            {(
+              <Card>
+                <Card.Header>
+                  <Card.Title className="flex items-center gap-2">
+                    <Database className="h-5 w-5 text-blue-600" />
+                    Pinecone Veritabanı Durumu
+                  </Card.Title>
+                </Card.Header>
+                <Card.Content>
+                  {pineconeStats.loading ? (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                      Pinecone stats yükleniyor...
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-medium">Toplam Vektör:</span> {pineconeStats.totalVectors}
+                      </p>
+                      {pineconeStats.totalVectors > 0 ? (
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                          <p className="text-sm text-green-800">
+                            ✅ Pinecone'da {pineconeStats.totalVectors} vektör bulundu! 
+                            Chat'i açarak sorular sorabilirsiniz.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                          <p className="text-sm text-orange-800">
+                            ⚠️ Pinecone'da henüz vektör bulunamadı. 
+                            Yukarıdan bir URL ekleyerek başlayın.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Card.Content>
+              </Card>
+            )}
+
+            {/* Empty State */}
+            {documents.length === 0 && !processing && pineconeStats.totalVectors === 0 && (
+              <Card className="text-center py-12">
+                <Card.Content>
+                  <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Henüz döküman eklenmedi
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Başlamak için yukarıdaki forma bir web sayfası URL'si girin
+                  </p>
+                  <div className="text-sm text-gray-500 space-y-1">
+                    <p>• Blog yazıları ve makaleler</p>
+                    <p>• Dokümantasyon sayfaları</p>
+                    <p>• Haber siteleri</p>
+                    <p>• Akademik yayınlar</p>
+                  </div>
+                </Card.Content>
+              </Card>
+            )}
+          </div>
+        ) : (
+          <div className="h-[calc(100vh-180px)]">
+            <ChatContainer onBack={() => setShowChat(false)} />
+          </div>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
-}
+};
+
+export default HomePage;
