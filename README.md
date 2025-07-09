@@ -1,18 +1,18 @@
-# 🤖 RAG Chat App - AI Destekli Döküman Sohbet Uygulaması
+# 🤖 RAG Web Chat - Web Sitesi Bilgilerine Dayalı AI Sohbet Uygulaması
 
-Modern RAG (Retrieval-Augmented Generation) sistemi ile web dökümanlarını AI'ya öğreterek akıllı sohbet deneyimi yaşayın.
+Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğretin ve site hakkında detaylı sorular sorun. Modern RAG (Retrieval-Augmented Generation) sistemi ile web sitelerinin bilgilerini anlık olarak AI'ya entegre edin.
 
 ## 🌟 Özellikler
 
-### 📚 Döküman Yönetimi
-- **Web Scraping**: Herhangi bir web sayfasını URL ile otomatik olarak içerik çıkarma
-- **Akıllı Parçalama**: Dökümanları anlamlı parçalara bölerek verimli işleme
+### 🌐 Web Sitesi İşleme
+- **URL Girişi**: Herhangi bir web sitesinin URL'sini girerek otomatik içerik çıkarma
+- **Akıllı Scraping**: Web sayfalarından temiz metin ve başlık bilgilerini çıkarma
 - **Vektör Depolama**: Pinecone veritabanında yüksek performanslı vektör saklama
-- **Gerçek Zamanlı Takip**: Eklenen dökümanların canlı izlenmesi
+- **Gerçek Zamanlı Takip**: İşlenen web sitelerinin canlı izlenmesi
 
-### 💬 Akıllı Sohbet
-- **RAG Sistemi**: Sadece yüklenen dökümanlar temelinde doğru yanıtlar
-- **Kaynak Referansları**: Her yanıtla birlikte kaynak döküman bilgileri
+### 💬 Site Tabanlı Sohbet
+- **RAG Sistemi**: Sadece girilen web sitelerinin bilgileri temelinde doğru yanıtlar
+- **Kaynak Referansları**: Her yanıtla birlikte kaynak web sitesi bilgileri
 - **Hızlı Yanıtlar**: Google Gemini AI ile optimize edilmiş performans
 - **Türkçe Desteği**: Tam Türkçe arayüz ve etkileşim
 
@@ -47,8 +47,8 @@ Modern RAG (Retrieval-Augmented Generation) sistemi ile web dökümanlarını AI
 
 ### 1. Projeyi Klonlayın
 ```bash
-git clone https://github.com/kullanici-adi/rag-chat-app.git
-cd rag-chat-app
+git clone https://github.com/yucel-gumus/RAG_Web_Chat.git
+cd RAG_Web_Chat
 ```
 
 ### 2. Bağımlılıkları Yükleyin
@@ -61,18 +61,21 @@ pnpm install
 ```
 
 ### 3. Ortam Değişkenlerini Ayarlayın
-`.env.local` dosyası oluşturun:
+Proje kök dizininde `.env.local` dosyası oluşturun:
 
 ```env
-# Google Gemini AI
-GOOGLE_API_KEY=your_google_api_key_here
+# Google Gemini AI API Key
+# Google AI Studio'dan alınacak API anahtarı
+# https://makersuite.google.com/app/apikey
+GOOGLE_API_KEY=your_google_gemini_api_key_here
 
-# Pinecone
+# Pinecone Vector Database
+# https://www.pinecone.io/
 PINECONE_API_KEY=your_pinecone_api_key_here
 PINECONE_INDEX_NAME=your_pinecone_index_name_here
 PINECONE_ENVIRONMENT=your_pinecone_environment_here
 
-# Diğer (isteğe bağlı)
+# Uygulama URL'si (isteğe bağlı)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
@@ -86,6 +89,19 @@ pnpm dev
 ```
 
 http://localhost:3000 adresinde uygulamayı görüntüleyin.
+
+## 🚀 Deployment
+
+### Vercel ile Deploy Etme
+1. [Vercel](https://vercel.com) hesabı oluşturun
+2. GitHub repository'sini Vercel'e bağlayın
+3. Environment variables'ları Vercel dashboard'dan ekleyin
+4. Otomatik deployment başlayacak
+
+### Diğer Platformlar
+- **Netlify**: Build command: `npm run build`, Publish directory: `out`
+- **Railway**: Docker desteği ile kolay deployment
+- **Heroku**: Node.js buildpack ile deploy edilebilir
 
 ## 🔧 Konfigürasyon
 
@@ -103,19 +119,19 @@ http://localhost:3000 adresinde uygulamayı görüntüleyin.
 
 ## 📖 Kullanım
 
-### 1. Döküman Ekleme
-- Ana sayfada URL input alanına web sayfası URL'sini girin
-- "Döküman Ekle" butonuna tıklayın
-- Sistem otomatik olarak içeriği çıkarır ve vektör veritabanına kaydeder
+### 1. Web Sitesi Ekleme
+- Ana sayfada URL input alanına istediğiniz web sitesinin URL'sini girin
+- "Web Sitesi Ekle" butonuna tıklayın
+- Sistem otomatik olarak web sitesinin içeriğini çıkarır ve vektör veritabanına kaydeder
 
 ### 2. Sohbet Etme
-- Dökümanlar eklendikten sonra "Sohbet Et" butonuna tıklayın
-- Soru alanına dökümanlarla ilgili sorularınızı yazın
-- AI sadece yüklenen dökümanlar temelinde yanıt verir
+- Web siteleri eklendikten sonra "Sohbet Et" butonuna tıklayın
+- Soru alanına web siteleri hakkında sorularınızı yazın
+- AI sadece eklenen web sitelerinin bilgileri temelinde yanıt verir
 
-### 3. Döküman Yönetimi
-- Ana sayfada eklenen dökümanları görüntüleyin
-- İstenmeyen dökümanları silin
+### 3. Web Sitesi Yönetimi
+- Ana sayfada eklenen web sitelerini görüntüleyin
+- İstenmeyen web sitelerini silin
 - Pinecone veritabanı durumunu takip edin
 
 ## 🏗️ Proje Yapısı
@@ -125,7 +141,7 @@ src/
 ├── app/
 │   ├── api/              # API rotaları
 │   │   ├── chat/         # Sohbet API'si
-│   │   ├── documents/    # Döküman yönetimi
+│   │   ├── documents/    # Web sitesi yönetimi
 │   │   ├── embed/        # Vektör embedding
 │   │   └── scrape/       # Web scraping
 │   ├── globals.css       # Global stiller
@@ -220,13 +236,14 @@ Pinecone index'i farklı embedding modelleri için yeniden konfigüre edebilirsi
 
 ## 📊 Performans İpuçları
 
-- **Döküman Boyutu**: Çok büyük dökümanları parçalara bölün
+- **Web Sitesi Boyutu**: Çok büyük web sitelerinin içeriği otomatik olarak parçalara bölünür
 - **Vektör Limitleri**: Pinecone planınızın limitlerini takip edin
 - **API Quotas**: Google AI API kullanım limitlerini izleyin
+- **Site Seçimi**: Temiz ve yapılandırılmış içerikli siteleri tercih edin
 
 ## 🤝 Katkıda Bulunma
 
-1. Bu repository'yi fork edin
+1. Bu repository'yi fork edin: [RAG_Web_Chat](https://github.com/yucel-gumus/RAG_Web_Chat)
 2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
 3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
 4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
@@ -245,7 +262,7 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICE
 
 ## 👨‍💻 Geliştirici
 
-**Yücel Gümüş** - [GitHub](https://github.com/kullanici-adi)
+**Yücel Gümüş** - [GitHub](https://github.com/yucel-gumus)
 
 ---
 

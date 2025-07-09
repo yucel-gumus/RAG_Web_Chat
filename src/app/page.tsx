@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 // LocalStorage removed - using only Pinecone stats
 
-interface ProcessedDocument {
+interface ProcessedWebsite {
   url: string;
   title: string;
   chunksCount: number;
@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
     message: string;
     url?: string;
   } | null>(null);
-  const [documents, setDocuments] = useState<ProcessedDocument[]>([]);
+  const [documents, setDocuments] = useState<ProcessedWebsite[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [pineconeStats, setPineconeStats] = useState<{
     totalVectors: number;
@@ -105,8 +105,8 @@ const HomePage: React.FC = () => {
         url,
       });
 
-      // Döküman listesine ekle (session için)
-      const newDocument: ProcessedDocument = {
+      // Web sitesi listesine ekle (session için)
+      const newDocument: ProcessedWebsite = {
         url: scrapedContent.url,
         title: scrapedContent.title,
         chunksCount: embedData.chunksProcessed,
@@ -150,7 +150,7 @@ const HomePage: React.FC = () => {
     setShowChat(!showChat);
   };
 
-  const handleDeleteDocument = async (url: string) => {
+  const handleDeleteWebsite = async (url: string) => {
     try {
       // UI'dan sil (session için)
       setDocuments(prev => prev.filter(doc => doc.url !== url));
@@ -159,7 +159,7 @@ const HomePage: React.FC = () => {
       // await fetch('/api/documents/delete', { ... });
       
     } catch (error) {
-      console.error('Döküman silme hatası:', error);
+      console.error('Web sitesi silme hatası:', error);
     }
   };
 
@@ -175,10 +175,10 @@ const HomePage: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  Döküman Sohbet Uygulaması
+                  Web Sitesi Sohbet Uygulaması
                 </h1>
                 <p className="text-gray-600">
-                  Web sayfalarından bilgi çekerek AI ile sohbet edin
+                  Web sitelerinin bilgilerini AI'ya öğreterek sohbet edin
                 </p>
               </div>
             </div>
@@ -186,7 +186,7 @@ const HomePage: React.FC = () => {
             {(documents.length > 0 || pineconeStats.totalVectors > 0) && (
               <Button onClick={handleToggleChat}>
                 <MessageCircle className="h-4 w-4 mr-2" />
-                {showChat ? 'Döküman Ekle' : 'Sohbet Et'}
+                {showChat ? 'Web Sitesi Ekle' : 'Sohbet Et'}
               </Button>
             )}
           </div>
@@ -211,7 +211,7 @@ const HomePage: React.FC = () => {
                 <Card.Header>
                   <Card.Title className="flex items-center gap-2">
                     <Database className="h-5 w-5 text-green-600" />
-                    Kaydedilmiş Dökümanlar ({documents.length})
+                    Kaydedilmiş Web Siteleri ({documents.length})
                   </Card.Title>
                 </Card.Header>
                 
@@ -243,9 +243,9 @@ const HomePage: React.FC = () => {
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           <span className="text-xs text-gray-500">Aktif</span>
                           <button
-                            onClick={() => handleDeleteDocument(doc.url)}
+                            onClick={() => handleDeleteWebsite(doc.url)}
                             className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                            title="Dökümanı sil"
+                            title="Web sitesini sil"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -304,10 +304,10 @@ const HomePage: React.FC = () => {
                 <Card.Content>
                   <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Henüz döküman eklenmedi
+                    Henüz web sitesi eklenmedi
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Başlamak için yukarıdaki forma bir web sayfası URL'si girin
+                    Başlamak için yukarıdaki forma bir web sitesi URL'si girin
                   </p>
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>• Blog yazıları ve makaleler</p>

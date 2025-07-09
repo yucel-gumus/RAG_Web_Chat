@@ -26,9 +26,9 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       role: 'assistant',
-      content: `Merhaba! 👋 Döküman sohbet asistanınızım. 
+      content: `Merhaba! 👋 Web sitesi bilgileri sohbet asistanınızım. 
 
-Vektör veritabanınıza kaydettiğiniz dökümanlar hakkında sorular sorabilirsiniz. Size sadece bu dökümanlar çerçevesinde yardımcı olabilirim.
+Vektör veritabanınıza kaydettiğiniz web sitelerinden öğrendiğim bilgiler hakkında sorular sorabilirsiniz. Size sadece bu web sitelerinin içeriği çerçevesinde yardımcı olabilirim.
 
 Nasıl yardımcı olabilirim?`,
       timestamp: new Date(),
@@ -209,7 +209,7 @@ Yeni sorularınızı sorabilirsiniz.`,
       <ChatInput
         onSendMessage={handleSendMessage}
         loading={loading}
-        placeholder="Dökümanlarınız hakkında bir soru sorun..."
+        placeholder="Web sitelerinden öğrendiğim bilgiler hakkında bir soru sorun..."
       />
     </div>
   );
