@@ -41,5 +41,6 @@ export interface DocumentMetadata {
   timestamp: string;
   chunkIndex: number;
   totalChunks: number;
-  [key: string]: any; // Pinecone RecordMetadata uyumluluğu için
+  content: string;
+  [key: string]: string | number | boolean; // Pinecone RecordMetadata uyumluluğu için
 } 

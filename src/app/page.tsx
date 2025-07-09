@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Database, FileText, Trash2 } from 'lucide-react';
-import UrlInput, { UrlProcessing } from '@/components/url-input/UrlInput';
+import UrlInput from '@/components/url-input/UrlInput';
 import ChatContainer from '@/components/chat/ChatContainer';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
@@ -178,7 +178,7 @@ const HomePage: React.FC = () => {
                   Web Sitesi Sohbet Uygulaması
                 </h1>
                 <p className="text-gray-600">
-                  Web sitelerinin bilgilerini AI'ya öğreterek sohbet edin
+                  Web sitelerinin bilgilerini AI&apos;ya öğreterek sohbet edin
                 </p>
               </div>
             </div>
@@ -280,14 +280,14 @@ const HomePage: React.FC = () => {
                       {pineconeStats.totalVectors > 0 ? (
                         <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                           <p className="text-sm text-green-800">
-                            ✅ Pinecone'da {pineconeStats.totalVectors} vektör bulundu! 
-                            Chat'i açarak sorular sorabilirsiniz.
+                            ✅ Pinecone&apos;da {pineconeStats.totalVectors} vektör bulundu! 
+                            Chat&apos;i açarak sorular sorabilirsiniz.
                           </p>
                         </div>
                       ) : (
                         <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                           <p className="text-sm text-orange-800">
-                            ⚠️ Pinecone'da henüz vektör bulunamadı. 
+                            ⚠️ Pinecone&apos;da henüz vektör bulunamadı. 
                             Yukarıdan bir URL ekleyerek başlayın.
                           </p>
                         </div>
@@ -307,7 +307,7 @@ const HomePage: React.FC = () => {
                     Henüz web sitesi eklenmedi
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Başlamak için yukarıdaki forma bir web sitesi URL'si girin
+                    Başlamak için yukarıdaki forma bir web sitesi URL&apos;si girin
                   </p>
                   <div className="text-sm text-gray-500 space-y-1">
                     <p>• Blog yazıları ve makaleler</p>

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, RefreshCw, Trash2, ArrowLeft } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
-import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { ChatMessage as ChatMessageType } from '@/types';
 

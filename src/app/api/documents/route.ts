@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getIndexStats } from '@/lib/pinecone';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Pinecone index stats'ları al
     const indexStats = await getIndexStats();

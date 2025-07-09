@@ -53,10 +53,10 @@ export async function POST(request: NextRequest) {
         
         relevantMatches.forEach((match, index) => {
           // PDF (metin) ve URL (content/text) verilerini handle et
-          const content = match.metadata.content || 
+          const content = String(match.metadata.content || 
                         match.metadata.text || 
                         match.metadata.metin || 
-                        'İçerik bulunamadı';
+                        'İçerik bulunamadı');
           
           console.log(`📝 Content extracted (${content.length} chars):`, content.substring(0, 100) + '...');
           
@@ -68,12 +68,12 @@ export async function POST(request: NextRequest) {
             source = `${match.metadata.filename || match.metadata.file_name} (PDF)`;
           } else if (match.metadata.dosyaId) {
             // PDF dosyası (UUID format)
-            const title = match.metadata.metin?.substring(0, 50) + '...' || 'PDF Dökümanı';
-            source = `${title} (PDF - ${match.metadata.dosyaId.substring(0, 8)})`;
+            const title = String(match.metadata.metin || 'PDF Dökümanı').substring(0, 50) + '...';
+            source = `${title} (PDF - ${String(match.metadata.dosyaId).substring(0, 8)})`;
           } else if (match.metadata.title) {
-            source = `${match.metadata.title} (Döküman)`;
+            source = `${String(match.metadata.title)} (Döküman)`;
           } else {
-            source = `Döküman (${match.id.substring(0, 8)}...)`;
+            source = `Döküman (${String(match.id).substring(0, 8)}...)`;
           }
           
           console.log('📄 Source detected:', source);
@@ -159,7 +159,7 @@ Ekleyebileceğiniz içerik türleri:
 }
 
 // OPTIONS metodu CORS için
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {
