@@ -42,5 +42,6 @@ export interface DocumentMetadata {
   chunkIndex: number;
   totalChunks: number;
   content: string;
-  [key: string]: string | number | boolean; // Pinecone RecordMetadata uyumluluğu için
+  // Sadece web sitesiyle ilgili metadata tutulacak
+  [key: string]: string | number | boolean;
 } 

@@ -17,77 +17,46 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Kullanıcı sorusu:', message);
-
     // 1. Soru için embedding oluştur
     const queryEmbedding = await generateQueryEmbedding(message);
-    console.log('Query embedding oluşturuldu');
 
     // 2. Pinecone'dan benzer vektörleri ara
     const searchResults = await queryVectors(queryEmbedding, 10);
-    console.log(`${searchResults.matches.length} eşleşme bulundu`);
 
     // 3. Context'i oluştur
     let context = '';
     const sources: string[] = [];
-    const sourceMapping: { [key: number]: string } = {}; // Bölüm numarası -> kaynak mapping
+    const sourceMapping: { [key: number]: string } = {};
     
     if (searchResults.matches.length > 0) {
-      console.log('🔍 Tüm matches (skor sırasına göre):');
-      searchResults.matches.forEach((match, index) => {
-        console.log(`${index + 1}. Score: ${match.score}, ID: ${match.id}`);
-      });
-      
-      // Benzerlik skorunu düşür - PDF veriler için
+      // Sadece web sitesi içeriklerini işle
       const relevantMatches = searchResults.matches
-        .filter(match => match.score > 0.5) // Daha düşük threshold
-        .slice(0, 5); // Daha fazla chunk al
-      
-      console.log(`📝 Relevantmatches (>0.5 score): ${relevantMatches.length}`);
-      relevantMatches.forEach((match, index) => {
-        console.log(`${index + 1}. Score: ${match.score}, Source type: ${match.id?.includes('_chunk_') ? 'URL' : 'PDF?'}`);
-      });
+        .filter(match => match.score > 0.5)
+        .slice(0, 5);
 
-              if (relevantMatches.length > 0) {
+      if (relevantMatches.length > 0) {
         const contextParts: string[] = [];
         
         relevantMatches.forEach((match, index) => {
-          // PDF (metin) ve URL (content/text) verilerini handle et
-          const content = String(match.metadata.content || 
-                        match.metadata.text || 
-                        match.metadata.metin || 
-                        'İçerik bulunamadı');
+          // Sadece web sitesi içeriği
+          const content = String(match.metadata.content || 'İçerik bulunamadı');
           
-          console.log(`📝 Content extracted (${content.length} chars):`, content.substring(0, 100) + '...');
-          
-          // Source belirleme - URL vs PDF
+          // Kaynak sadece URL ve başlık
           let source = '';
           if (match.metadata.url) {
-            source = `${match.metadata.title || 'Web Dökümanı'} (${match.metadata.url})`;
-          } else if (match.metadata.filename || match.metadata.file_name) {
-            source = `${match.metadata.filename || match.metadata.file_name} (PDF)`;
-          } else if (match.metadata.dosyaId) {
-            // PDF dosyası (UUID format)
-            const title = String(match.metadata.metin || 'PDF Dökümanı').substring(0, 50) + '...';
-            source = `${title} (PDF - ${String(match.metadata.dosyaId).substring(0, 8)})`;
-          } else if (match.metadata.title) {
-            source = `${String(match.metadata.title)} (Döküman)`;
+            source = `${match.metadata.title || 'Web Sitesi'} (${match.metadata.url})`;
           } else {
-            source = `Döküman (${String(match.id).substring(0, 8)}...)`;
+            source = `Web Sitesi (${String(match.id).substring(0, 8)}...)`;
           }
-          
-          console.log('📄 Source detected:', source);
           
           // Numaralı bölüm oluştur
           const sectionNumber = index + 1;
-          contextParts.push(`BÖLÜM ${sectionNumber}:\n${content}`);
+          contextParts.push(`BÖLÜM ${sectionNumber}:
+${content}`);
           sourceMapping[sectionNumber] = source;
         });
         
         context = contextParts.join('\n\n---\n\n');
-        
-        console.log('Context oluşturuldu, bölüm sayısı:', contextParts.length);
-        console.log('📚 Source Mapping:', sourceMapping);
       }
     }
 
@@ -95,36 +64,21 @@ export async function POST(request: NextRequest) {
     let aiResponse: string;
     
     if (context.trim().length === 0) {
-      aiResponse = `Üzgünüm, bu soruya cevap verebilmek için gerekli bilgileri vektör veritabanımda bulamadım. 
-
-Lütfen önce ilgili web sayfalarını ekleyerek döküman veritabanını oluşturun. Ardından bu sorularınızı yeniden sorabilirsiniz.
-
-Ekleyebileceğiniz içerik türleri:
-- Blog yazıları
-- Dokümantasyon sayfaları
-- Haber makaleleri
-- Akademik yayınlar
-- Teknik rehberler`;
+      aiResponse = `Üzgünüm, bu soruya cevap verebilmek için gerekli bilgileri vektör veritabanımda bulamadım.\n\nLütfen önce ilgili web sitelerini ekleyin. Ardından bu sorularınızı yeniden sorabilirsiniz.`;
     } else {
       aiResponse = await generateChatResponse(message, context);
-      
-      // AI'ın kullandığı bölüm numaralarını çıkar
+      // Kaynak eşleştirme
       const usedSectionsMatch = aiResponse.match(/KULLANILAN BÖLÜMLER:\s*([0-9,\s]+)/);
       if (usedSectionsMatch && typeof sourceMapping !== 'undefined') {
         const usedSectionNumbers = usedSectionsMatch[1]
           .split(',')
           .map(num => parseInt(num.trim()))
           .filter(num => !isNaN(num));
-        
-        console.log('🎯 AI kullandığı bölümler:', usedSectionNumbers);
-        
-        // Sadece kullanılan kaynakları sources'a ekle
         usedSectionNumbers.forEach(sectionNum => {
           if (sourceMapping[sectionNum] && !sources.includes(sourceMapping[sectionNum])) {
             sources.push(sourceMapping[sectionNum]);
           }
         });
-        
         // AI cevabından "KULLANILAN BÖLÜMLER" kısmını temizle
         const cleanupIndex = aiResponse.indexOf('\n\nKULLANILAN BÖLÜMLER:');
         if (cleanupIndex > -1) {
@@ -144,8 +98,6 @@ Ekleyebileceğiniz içerik türleri:
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Chat hatası:', error);
-    
     return NextResponse.json(
       { 
         error: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',

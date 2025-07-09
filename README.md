@@ -170,7 +170,7 @@ src/
 ## 🔌 API Endpoints
 
 ### POST /api/scrape
-Web sayfası içeriğini çıkarır.
+Web sitesi içeriğini çıkarır.
 ```json
 {
   "url": "https://example.com/article"
@@ -182,8 +182,8 @@ Web sayfası içeriğini çıkarır.
 ```json
 {
   "content": {
-    "title": "Makale Başlığı",
-    "text": "Makale içeriği...",
+    "title": "Sayfa Başlığı",
+    "text": "Sayfa içeriği...",
     "url": "https://example.com"
   }
 }

@@ -25,11 +25,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       role: 'assistant',
-      content: `Merhaba! 👋 Web sitesi bilgileri sohbet asistanınızım. 
-
-Vektör veritabanınıza kaydettiğiniz web sitelerinden öğrendiğim bilgiler hakkında sorular sorabilirsiniz. Size sadece bu web sitelerinin içeriği çerçevesinde yardımcı olabilirim.
-
-Nasıl yardımcı olabilirim?`,
+      content: `Merhaba! 👋 Web sitesi sohbet asistanınızım.\n\nVektör veritabanınıza kaydettiğiniz web sitelerinden öğrendiğim bilgiler hakkında sorular sorabilirsiniz. Size sadece bu web sitelerinin içeriği çerçevesinde yardımcı olabilirim.\n\nNasıl yardımcı olabilirim?`,
       timestamp: new Date(),
       sources: [],
     };
@@ -87,15 +83,11 @@ Nasıl yardımcı olabilirim?`,
       }
 
     } catch (error) {
-      console.error('Chat hatası:', error);
-      
       // Add error message
       const errorMessage: ChatMessageType = {
         id: `error_${Date.now()}`,
         role: 'assistant',
-        content: `Üzgünüm, bir hata oluştu: ${error instanceof Error ? error.message : 'Bilinmeyen hata'}
-
-Lütfen tekrar deneyin.`,
+        content: `Üzgünüm, bir hata oluştu: ${error instanceof Error ? error.message : 'Bilinmeyen hata'}\n\nLütfen tekrar deneyin.`,
         timestamp: new Date(),
         sources: [],
       };
@@ -114,9 +106,7 @@ Lütfen tekrar deneyin.`,
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       role: 'assistant',
-      content: `Sohbet temizlendi! 🧹
-
-Yeni sorularınızı sorabilirsiniz.`,
+      content: `Sohbet temizlendi! 🧹\n\nYeni sorularınızı sorabilirsiniz.`,
       timestamp: new Date(),
       sources: [],
     };
