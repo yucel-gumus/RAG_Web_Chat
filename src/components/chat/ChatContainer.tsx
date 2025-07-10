@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, RefreshCw, Trash2, ArrowLeft } from 'lucide-react';
+import { MessageCircle, Trash2, ArrowLeft } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import Button from '@/components/ui/Button';
@@ -113,11 +113,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
     setMessages([welcomeMessage]);
   };
 
-  const handleRefreshChat = () => {
-    // Simply reload the page to refresh everything
-    window.location.reload();
-  };
-
   return (
     <div className="h-full flex flex-col">
       {/* Chat Header */}
@@ -145,16 +140,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
           </div>
           
           <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleRefreshChat}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Yenile
-            </Button>
-            
             <Button
               variant="danger"
               size="sm"
