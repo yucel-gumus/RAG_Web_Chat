@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Database, FileText, PlusCircle, Trash2 } from 'lucide-react';
+import { MessageCircle, Database, PlusCircle, Trash2 } from 'lucide-react';
 import ChatContainer from '@/components/chat/ChatContainer';
 import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
@@ -111,7 +111,7 @@ const HomePage: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Web Sitesi Sohbet Uygulaması</h1>
-                <p className="text-gray-600">Web sitelerinin bilgilerini AI'ya öğreterek sohbet edin</p>
+                <p className="text-gray-600">Web sitelerinin bilgilerini AI&apos;ya öğreterek sohbet edin</p>
               </div>
             </div>
             <Button onClick={() => setIsModalOpen(true)}>
