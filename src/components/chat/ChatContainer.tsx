@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import { ChatMessage as ChatMessageType } from '@/types';
 
 interface ChatContainerProps {
-  onBack: () => void;
+  onBack?: () => void; // Made optional
 }
 
 const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
@@ -124,15 +124,17 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
       <div className="bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={onBack}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Geri
-            </Button>
+            {onBack && ( // Conditionally render back button
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={onBack}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Geri
+              </Button>
+            )}
             
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5 text-blue-600" />
