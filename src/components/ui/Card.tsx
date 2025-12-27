@@ -16,13 +16,13 @@ const Card: React.FC<CardProps> = ({
     md: 'p-6',
     lg: 'p-8',
   };
-  
+
   const classes = `
     bg-white rounded-lg border border-gray-200 shadow-sm
     ${paddingClasses[padding]}
     ${className}
   `;
-  
+
   return (
     <div className={classes}>
       {children}
@@ -72,7 +72,7 @@ const CardContent: React.FC<CardContentProps> = ({
   className = '',
 }) => {
   return (
-    <div className={className}>
+    <div className={`text-gray-900 ${className}`}>
       {children}
     </div>
   );

@@ -47,7 +47,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
     setLoading(true);
 
     try {
-      // Send to chat API
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -76,7 +75,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      
+
       // Update conversation ID
       if (data.conversationId && data.conversationId !== conversationId) {
         setConversationId(data.conversationId);
@@ -101,7 +100,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
   const handleClearChat = () => {
     setMessages([]);
     setConversationId('');
-    
+
     // Re-add welcome message
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
@@ -130,7 +129,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
                 Geri
               </Button>
             )}
-            
+
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5 text-blue-600" />
               <h2 className="text-lg font-semibold text-gray-900">
@@ -138,7 +137,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
               </h2>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="danger"
@@ -154,12 +153,12 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
+      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 min-h-0">
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
-          
+
           {/* Loading indicator */}
           {loading && (
             <div className="flex gap-3">
@@ -176,7 +175,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </div>

@@ -1,15 +1,25 @@
 import { Pinecone } from '@pinecone-database/pinecone';
 import { DocumentMetadata } from '@/types';
 
-// Pinecone client'ı başlat
-const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY!,
-});
+let pineconeClient: Pinecone | null = null;
 
-// Index referansını al
+const getPineconeClient = (): Pinecone => {
+  if (!pineconeClient) {
+    const apiKey = process.env.PINECONE_API_KEY;
+    if (!apiKey) {
+      throw new Error('PINECONE_API_KEY environment variable is not set');
+    }
+    pineconeClient = new Pinecone({ apiKey });
+  }
+  return pineconeClient;
+};
+
 const getIndex = () => {
-  const indexName = process.env.PINECONE_INDEX_NAME!;
-  return pinecone.index(indexName);
+  const indexName = process.env.PINECONE_INDEX_NAME;
+  if (!indexName) {
+    throw new Error('PINECONE_INDEX_NAME environment variable is not set');
+  }
+  return getPineconeClient().index(indexName);
 };
 
 /**
@@ -30,7 +40,7 @@ export const upsertVectors = async (
 ): Promise<void> => {
   try {
     const index = getIndex();
-    
+
     // Vectors array'ini hazırla
     const vectors = embeddings.map((embedding, i) => ({
       id: generateVectorId(metadata[i].url, metadata[i].chunkIndex),
@@ -67,11 +77,11 @@ export const queryVectors = async (
 }> => {
   try {
     const index = getIndex();
-    
+
     console.log('🔍 Pinecone query başlatılıyor...');
     console.log('Query vector dimensions:', queryEmbedding.length);
     console.log('TopK:', topK);
-    
+
     const queryResponse = await index.query({
       vector: queryEmbedding,
       topK,
@@ -81,14 +91,14 @@ export const queryVectors = async (
 
     console.log('📊 Query Response Details:');
     console.log('Total matches found:', queryResponse.matches?.length || 0);
-    
+
     if (queryResponse.matches && queryResponse.matches.length > 0) {
       queryResponse.matches.forEach((match, index) => {
         console.log(`Match ${index + 1}:`);
         console.log('  ID:', match.id);
         console.log('  Score:', match.score);
         console.log('  Metadata:', match.metadata);
-        
+
         // ID pattern analizi
         if (match.id?.includes('_chunk_')) {
           console.log('  Type: URL-based (current app format)');
@@ -117,7 +127,7 @@ export const queryVectors = async (
 export const deleteVectorsByUrl = async (url: string): Promise<void> => {
   try {
     const index = getIndex();
-    
+
     // URL için tüm vector ID'leri oluştur (max 1000 chunk varsayalım)
     const vectorIds: string[] = [];
     for (let i = 0; i < 1000; i++) {
@@ -150,12 +160,12 @@ export const getIndexStats = async () => {
   try {
     const index = getIndex();
     const stats = await index.describeIndexStats();
-    
+
     console.log('📈 Pinecone Index Stats:');
     console.log('Total record count:', stats.totalRecordCount);
     console.log('Dimension:', stats.dimension);
     console.log('Index fullness:', stats.indexFullness);
-    
+
     if (stats.namespaces) {
       console.log('📋 Namespaces:');
       Object.entries(stats.namespaces).forEach(([namespace, data]) => {
@@ -164,7 +174,7 @@ export const getIndexStats = async () => {
     } else {
       console.log('No namespace information available');
     }
-    
+
     return stats;
   } catch (error) {
     console.error('Pinecone stats hatası:', error);

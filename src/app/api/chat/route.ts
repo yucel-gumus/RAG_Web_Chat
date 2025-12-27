@@ -27,20 +27,20 @@ export async function POST(request: NextRequest) {
     let context = '';
     const sources: string[] = [];
     const sourceMapping: { [key: number]: string } = {};
-    
+
     if (searchResults.matches.length > 0) {
       // Sadece web sitesi içeriklerini işle
       const relevantMatches = searchResults.matches
-        .filter(match => match.score > 0.5)
+        .filter(match => match.score > 0.3)
         .slice(0, 5);
 
       if (relevantMatches.length > 0) {
         const contextParts: string[] = [];
-        
+
         relevantMatches.forEach((match, index) => {
           // Sadece web sitesi içeriği
           const content = String(match.metadata.content || 'İçerik bulunamadı');
-          
+
           // Kaynak sadece URL ve başlık
           let source = '';
           if (match.metadata.url) {
@@ -48,21 +48,21 @@ export async function POST(request: NextRequest) {
           } else {
             source = `Web Sitesi (${String(match.id).substring(0, 8)}...)`;
           }
-          
+
           // Numaralı bölüm oluştur
           const sectionNumber = index + 1;
           contextParts.push(`BÖLÜM ${sectionNumber}:
 ${content}`);
           sourceMapping[sectionNumber] = source;
         });
-        
+
         context = contextParts.join('\n\n---\n\n');
       }
     }
 
     // 4. Context varsa AI'dan cevap al, yoksa açıklayıcı mesaj
     let aiResponse: string;
-    
+
     if (context.trim().length === 0) {
       aiResponse = `Üzgünüm, bu soruya cevap verebilmek için gerekli bilgileri vektör veritabanımda bulamadım.\n\nLütfen önce ilgili web sitelerini ekleyin. Ardından bu sorularınızı yeniden sorabilirsiniz.`;
     } else {
@@ -99,7 +99,7 @@ ${content}`);
     return NextResponse.json(response);
   } catch (error) {
     return NextResponse.json(
-      { 
+      {
         error: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',
         response: 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
         sources: [],

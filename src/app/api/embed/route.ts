@@ -33,8 +33,8 @@ export async function POST(request: NextRequest) {
     const metadata: DocumentMetadata[] = content.chunks.map((chunk, index) => ({
       url: content.url,
       title: content.title,
-      timestamp: typeof content.timestamp === 'string' 
-        ? content.timestamp 
+      timestamp: typeof content.timestamp === 'string'
+        ? content.timestamp
         : new Date(content.timestamp).toISOString(),
       chunkIndex: index,
       totalChunks: content.chunks.length,
@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Embedding hatası:', error);
-    
+
     return NextResponse.json(
-      { 
+      {
         error: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',
-        success: false 
+        success: false
       },
       { status: 500 }
     );
@@ -72,8 +72,39 @@ export async function OPTIONS() {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     },
   });
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { url } = body as { url: string };
+
+    if (!url) {
+      return NextResponse.json(
+        { error: 'URL parametresi gerekli' },
+        { status: 400 }
+      );
+    }
+
+    await deleteVectorsByUrl(url);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Döküman başarıyla silindi',
+    });
+  } catch (error) {
+    console.error('Delete hatası:', error);
+
+    return NextResponse.json(
+      {
+        error: error instanceof Error ? error.message : 'Silme hatası',
+        success: false
+      },
+      { status: 500 }
+    );
+  }
 } 

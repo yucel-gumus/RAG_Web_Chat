@@ -31,6 +31,27 @@ const HomePage: React.FC = () => {
   }>({ totalVectors: 0, loading: true });
 
   useEffect(() => {
+    const savedDocuments = localStorage.getItem('rag-web-chat-documents');
+    if (savedDocuments) {
+      try {
+        const parsed = JSON.parse(savedDocuments);
+        setDocuments(parsed.map((doc: ProcessedWebsite) => ({
+          ...doc,
+          timestamp: new Date(doc.timestamp)
+        })));
+      } catch (error) {
+        console.error('localStorage parse error:', error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (documents.length > 0) {
+      localStorage.setItem('rag-web-chat-documents', JSON.stringify(documents));
+    }
+  }, [documents]);
+
+  useEffect(() => {
     const loadPineconeStats = async () => {
       try {
         const response = await fetch('/api/documents');
@@ -57,12 +78,12 @@ const HomePage: React.FC = () => {
         body: JSON.stringify({ url }),
       });
       if (!scrapeResponse.ok) throw new Error((await scrapeResponse.json()).error || 'Scraping başarısız');
-      
+
       const scrapeData = await scrapeResponse.json();
       const scrapedContent = scrapeData.data;
 
       setProcessing({ step: 'embedding', message: 'İçerik işleniyor ve vektör veritabanına kaydediliyor...', url });
-      
+
       const embedResponse = await fetch('/api/embed', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,7 +106,7 @@ const HomePage: React.FC = () => {
       const statsResponse = await fetch('/api/documents');
       const statsData = await statsResponse.json();
       setPineconeStats({ totalVectors: statsData.totalVectors || 0, loading: false });
-      
+
       setTimeout(() => setProcessing(null), 3000);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Bilinmeyen hata oluştu';
@@ -96,21 +117,42 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const handleDeleteWebsite = (url: string) => {
-    setDocuments(prev => prev.filter(doc => doc.url !== url));
+  const handleDeleteWebsite = async (url: string) => {
+    const updatedDocs = documents.filter(doc => doc.url !== url);
+    setDocuments(updatedDocs);
+
+    if (updatedDocs.length === 0) {
+      localStorage.removeItem('rag-web-chat-documents');
+    } else {
+      localStorage.setItem('rag-web-chat-documents', JSON.stringify(updatedDocs));
+    }
+
+    try {
+      await fetch('/api/embed', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      const statsResponse = await fetch('/api/documents');
+      const statsData = await statsResponse.json();
+      setPineconeStats({ totalVectors: statsData.totalVectors || 0, loading: false });
+    } catch (error) {
+      console.error('Pinecone delete error:', error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-blue-600 p-2 rounded-lg">
                 <MessageCircle className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Web Sitesi Sohbet Uygulaması</h1>
+                <h1 className="text-xl font-bold text-gray-900">Web Sitesi Sohbet Uygulaması</h1>
                 <p className="text-gray-600">Web sitelerinin bilgilerini AI&apos;ya öğreterek sohbet edin</p>
               </div>
             </div>
@@ -122,9 +164,44 @@ const HomePage: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
-        <ChatContainer />
-      </main>
+      <div className="flex flex-1 overflow-hidden">
+        {documents.length > 0 && (
+          <aside className="w-80 bg-white border-r border-gray-200 flex flex-col">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+                <Database className="h-5 w-5 text-green-600" />
+                Kaydedilen Siteler ({documents.length})
+              </h2>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="space-y-2">
+                {documents.map((doc, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 truncate text-sm">{doc.title}</h4>
+                      <p className="text-xs text-gray-500 truncate">{doc.url}</p>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteWebsite(doc.url)}
+                      className="ml-2 p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                      title="Sil"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
+        )}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden p-6">
+            <div className="flex-1 flex flex-col overflow-hidden max-w-3xl mx-auto w-full bg-white rounded-lg shadow-sm border border-gray-200">
+              <ChatContainer />
+            </div>
+          </div>
+        </main>
+      </div>
 
       <Modal
         isOpen={isModalOpen}
