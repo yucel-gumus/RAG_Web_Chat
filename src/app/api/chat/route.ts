@@ -1,26 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { gatewayFetch } from '@/lib/gateway';
 import { ChatRequest, ChatResponse } from '@/types';
+import { requireTenantId } from '@/lib/tenant';
 
 export async function POST(request: NextRequest) {
   try {
+    const tenantId = requireTenantId(request);
+    if (!tenantId) {
+      return NextResponse.json({ error: 'Oturum gerekli. Sayfayı yenileyin.' }, { status: 401 });
+    }
+
     const body = await request.json();
-    const { message, conversationId, allowedUrls } = body as ChatRequest;
+    const { message, conversationId } = body as ChatRequest;
 
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Geçerli bir mesaj gerekli' }, { status: 400 });
     }
 
-    if (!allowedUrls?.length) {
-      return NextResponse.json(
-        { error: 'Önce web sitesi ekleyin (allowedUrls gerekli).' },
-        { status: 400 },
-      );
-    }
-
     const response = await gatewayFetch('/api/rag-web/chat', {
       method: 'POST',
-      body: JSON.stringify({ message, allowedUrls }),
+      body: JSON.stringify({ tenantId, message }),
     });
 
     const data = await response.json();

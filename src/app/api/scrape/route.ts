@@ -1,22 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeUrl } from '@/lib/scraper';
+import { assertSafePublicUrl } from '@/lib/ssrf-guard';
 
 export async function POST(request: NextRequest) {
   try {
-    // Request body'yi parse et
     const body = await request.json();
     const { url } = body;
 
-    // URL parametresi kontrolü
     if (!url || typeof url !== 'string') {
       return NextResponse.json(
         { error: 'URL parametresi gerekli ve string olmalıdır' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // Web scraping işlemini gerçekleştir
-    const scrapedContent = await scrapeUrl(url);
+    const safeUrl = await assertSafePublicUrl(url);
+    const scrapedContent = await scrapeUrl(safeUrl);
 
     return NextResponse.json({
       success: true,
@@ -24,25 +23,15 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Scraping hatası:', error);
-    
-    return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',
-        success: false 
-      },
-      { status: 500 }
-    );
+
+    const message = error instanceof Error ? error.message : 'Bilinmeyen hata oluştu';
+    const clientError =
+      message.includes('kapalı') ||
+      message.includes('özel') ||
+      message.includes('Geçersiz') ||
+      message.includes('http/https') ||
+      message.includes('Kimlik');
+
+    return NextResponse.json({ error: message, success: false }, { status: clientError ? 400 : 500 });
   }
 }
-
-// OPTIONS metodu CORS için
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
-} 

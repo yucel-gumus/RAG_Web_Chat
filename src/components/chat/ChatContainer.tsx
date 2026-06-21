@@ -7,11 +7,10 @@ import { ChatMessage as ChatMessageType } from '@/types';
 
 interface ChatContainerProps {
   onBack?: () => void;
-  allowedUrls: string[];
   canChat: boolean;
 }
 
-const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, allowedUrls, canChat }) => {
+const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
@@ -35,7 +34,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, allowedUrls, canC
   }, []);
 
   const handleSendMessage = async (content: string) => {
-    if (!content.trim() || loading || !canChat || allowedUrls.length === 0) return;
+    if (!content.trim() || loading || !canChat) return;
 
     // Add user message
     const userMessage: ChatMessageType = {
@@ -57,7 +56,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, allowedUrls, canC
         body: JSON.stringify({
           message: content,
           conversationId: conversationId || undefined,
-          allowedUrls,
         }),
       });
 

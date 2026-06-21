@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { gatewayFetch } from '@/lib/gateway';
 import { ScrapedContent } from '@/types';
+import {
+  attachTenantCookie,
+  getOrCreateTenantId,
+  requireTenantId,
+} from '@/lib/tenant';
 
 export async function POST(request: NextRequest) {
   try {
+    const { tenantId, isNew } = getOrCreateTenantId(request);
     const body = await request.json();
     const { content } = body as { content: ScrapedContent };
 
@@ -14,7 +20,7 @@ export async function POST(request: NextRequest) {
     const response = await gatewayFetch('/api/rag-web/upsert', {
       method: 'POST',
       admin: true,
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ tenantId, content }),
     });
 
     const data = await response.json();
@@ -25,12 +31,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
+    const res = NextResponse.json({
       success: true,
       vectorId: data.vectorId,
       chunksProcessed: data.chunksProcessed,
       message: data.message,
     });
+    if (isNew) attachTenantCookie(res, tenantId);
+    return res;
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Bilinmeyen hata', success: false },
@@ -41,6 +49,10 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const tenantId = requireTenantId(request);
+    if (!tenantId) {
+      return NextResponse.json({ error: 'Oturum gerekli' }, { status: 401 });
+    }
     const body = await request.json();
     const { url } = body as { url: string };
 
@@ -51,7 +63,7 @@ export async function DELETE(request: NextRequest) {
     const response = await gatewayFetch('/api/rag-web/delete', {
       method: 'POST',
       admin: true,
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ tenantId, url }),
     });
 
     const data = await response.json();

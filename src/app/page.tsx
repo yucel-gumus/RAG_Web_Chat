@@ -26,7 +26,10 @@ const HomePage: React.FC = () => {
   } | null>(null);
   const [documents, setDocuments] = useState<ProcessedWebsite[]>([]);
   const sessionChunkTotal = documents.reduce((sum, d) => sum + d.chunksCount, 0);
-  const allowedUrls = documents.map((d) => d.url);
+
+  useEffect(() => {
+    fetch('/api/session', { credentials: 'include' }).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const savedDocuments = localStorage.getItem('rag-web-chat-documents');
@@ -174,7 +177,6 @@ const HomePage: React.FC = () => {
           <div className="flex-1 flex flex-col overflow-hidden p-6">
             <div className="flex-1 flex flex-col overflow-hidden max-w-3xl mx-auto w-full bg-white rounded-lg shadow-sm border border-gray-200">
               <ChatContainer
-                allowedUrls={allowedUrls}
                 canChat={documents.length > 0}
               />
             </div>

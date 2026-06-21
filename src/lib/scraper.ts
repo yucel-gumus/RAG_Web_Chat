@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { ScrapedContent } from '@/types';
+import { assertSafePublicUrl } from '@/lib/ssrf-guard';
 
 /**
  * URL doğrulama fonksiyonu
@@ -58,14 +59,12 @@ const chunkText = (text: string, chunkSize: number = 2000, overlap: number = 400
  * Web sayfasından içerik çekme
  */
 export const scrapeUrl = async (url: string): Promise<ScrapedContent> => {
-  // URL doğrulama
-  if (!isValidUrl(url)) {
-    throw new Error('Geçersiz URL formatı');
-  }
+  const safeUrl = await assertSafePublicUrl(url);
 
   try {
-    const response = await axios.get(url, {
+    const response = await axios.get(safeUrl, {
       timeout: 15000,
+      maxRedirects: 3,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
@@ -82,7 +81,6 @@ export const scrapeUrl = async (url: string): Promise<ScrapedContent> => {
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
       },
-      maxRedirects: 5,
     });
 
     const $ = cheerio.load(response.data);

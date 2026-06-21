@@ -27,7 +27,6 @@ export interface EmbeddingResponse {
 export interface ChatRequest {
   message: string;
   conversationId?: string;
-  allowedUrls: string[];
 }
 
 export interface ChatResponse {
