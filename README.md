@@ -74,9 +74,14 @@ GOOGLE_API_KEY=your_google_gemini_api_key_here
 
 # Pinecone Vector Database
 # https://www.pinecone.io/
-PINECONE_API_KEY=your_pinecone_api_key_here
-PINECONE_INDEX_NAME=your_pinecone_index_name_here
-PINECONE_ENVIRONMENT=your_pinecone_environment_here
+## Environment (Vercel)
+
+Server-side only (never in the browser):
+
+- `AI_API_URL` / `GEMINI_GATEWAY_URL`
+- `GATEWAY_CLIENT_API_KEY` / `GATEWAY_ADMIN_API_KEY`
+
+Vectors and embeddings are handled by the gateway (`/api/rag-web/*`).
 
 # Uygulama URL'si (isteğe bağlı)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
