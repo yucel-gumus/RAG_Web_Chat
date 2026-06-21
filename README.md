@@ -45,7 +45,7 @@ Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğreti
 ```env
 AI_API_URL=https://api.yucelgumus.dev
 GATEWAY_CLIENT_API_KEY=...
-GATE...le
+GATEWAY_ADMIN_API_KEY=...
 ```
 
 ### 1. Projeyi Klonlayın
