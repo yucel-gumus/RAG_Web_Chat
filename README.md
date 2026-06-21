@@ -38,10 +38,15 @@ Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğreti
 ## 📦 Kurulum
 
 ### Gereksinimler
-- Node.js 18.0 veya üzeri
-- npm, yarn, pnpm veya bun
-- Pinecone hesabı
-- Google AI Studio API anahtarı
+- Node.js 18+
+- Vercel’de (veya `.env.local`) gateway anahtarları — bkz. `.env.example`
+
+### Ortam (Vercel / `.env.local`)
+```env
+AI_API_URL=https://api.yucelgumus.dev
+GATEWAY_CLIENT_API_KEY=...
+GATE...le
+```
 
 ### 1. Projeyi Klonlayın
 ```bash
