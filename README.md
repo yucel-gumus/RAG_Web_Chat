@@ -32,10 +32,8 @@ Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğreti
 - **Lucide React** - Modern ikonlar
 
 ### Backend & AI
-- **Google Gemini AI** - Doğal dil işleme
-- **Pinecone** - Vektör veritabanı
-- **Cheerio** - Web scraping
-- **Axios** - HTTP istekleri
+- **python_backend gateway** (`api.yucelgumus.dev`) — embedding, Pinecone, Gemini (sunucu tarafı)
+- **Cheerio** — Web scraping (Next.js `/api/scrape`, anahtar gerektirmez)
 
 ## 📦 Kurulum
 
