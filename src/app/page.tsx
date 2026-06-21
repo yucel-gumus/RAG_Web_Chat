@@ -25,10 +25,8 @@ const HomePage: React.FC = () => {
     url?: string;
   } | null>(null);
   const [documents, setDocuments] = useState<ProcessedWebsite[]>([]);
-  const [pineconeStats, setPineconeStats] = useState<{
-    totalVectors: number;
-    loading: boolean;
-  }>({ totalVectors: 0, loading: true });
+  const sessionChunkTotal = documents.reduce((sum, d) => sum + d.chunksCount, 0);
+  const allowedUrls = documents.map((d) => d.url);
 
   useEffect(() => {
     const savedDocuments = localStorage.getItem('rag-web-chat-documents');
@@ -51,22 +49,7 @@ const HomePage: React.FC = () => {
     }
   }, [documents]);
 
-  useEffect(() => {
-    const loadPineconeStats = async () => {
-      try {
-        const response = await fetch('/api/documents');
-        const data = await response.json();
-        setPineconeStats({
-          totalVectors: data.totalVectors || 0,
-          loading: false,
-        });
-      } catch (error) {
-        console.error('Pinecone stats error:', error);
-        setPineconeStats(prev => ({ ...prev, loading: false }));
-      }
-    };
-    loadPineconeStats();
-  }, []);
+
 
   const handleUrlSubmit = async (url: string) => {
     setLoading(true);
@@ -103,10 +86,6 @@ const HomePage: React.FC = () => {
       };
       setDocuments(prev => [newDocument, ...prev]);
 
-      const statsResponse = await fetch('/api/documents');
-      const statsData = await statsResponse.json();
-      setPineconeStats({ totalVectors: statsData.totalVectors || 0, loading: false });
-
       setTimeout(() => setProcessing(null), 3000);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Bilinmeyen hata oluştu';
@@ -134,9 +113,6 @@ const HomePage: React.FC = () => {
         body: JSON.stringify({ url }),
       });
 
-      const statsResponse = await fetch('/api/documents');
-      const statsData = await statsResponse.json();
-      setPineconeStats({ totalVectors: statsData.totalVectors || 0, loading: false });
     } catch (error) {
       console.error('Pinecone delete error:', error);
     }
@@ -197,7 +173,10 @@ const HomePage: React.FC = () => {
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 flex flex-col overflow-hidden p-6">
             <div className="flex-1 flex flex-col overflow-hidden max-w-3xl mx-auto w-full bg-white rounded-lg shadow-sm border border-gray-200">
-              <ChatContainer />
+              <ChatContainer
+                allowedUrls={allowedUrls}
+                canChat={documents.length > 0}
+              />
             </div>
           </div>
         </main>
@@ -251,11 +230,9 @@ const HomePage: React.FC = () => {
               </Card.Title>
             </Card.Header>
             <Card.Content>
-              {pineconeStats.loading ? (
-                <p>Yükleniyor...</p>
-              ) : (
-                <p>Toplam {pineconeStats.totalVectors} vektör kayıtlı.</p>
-              )}
+              <p>
+                Bu oturumda {sessionChunkTotal} parça ({documents.length} site) — arama yalnızca bunlarla sınırlı.
+              </p>
             </Card.Content>
           </Card>
         </div>

@@ -1,81 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateBatchEmbeddings } from '@/lib/gemini';
-import { upsertVectors, deleteVectorsByUrl } from '@/lib/pinecone';
-import { ScrapedContent, DocumentMetadata } from '@/types';
+import { gatewayFetch } from '@/lib/gateway';
+import { ScrapedContent } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
-    // Request body'yi parse et
     const body = await request.json();
     const { content } = body as { content: ScrapedContent };
 
-    // Content parametresi kontrolü
-    if (!content || !content.url || !content.chunks || content.chunks.length === 0) {
+    if (!content?.url || !content.chunks?.length) {
+      return NextResponse.json({ error: 'Geçerli content gerekli' }, { status: 400 });
+    }
+
+    const response = await gatewayFetch('/api/rag-web/upsert', {
+      method: 'POST',
+      admin: true,
+      body: JSON.stringify({ content }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
       return NextResponse.json(
-        { error: 'Geçerli content parametresi gerekli' },
-        { status: 400 }
+        { error: data.detail || 'Embedding hatası', success: false },
+        { status: response.status },
       );
     }
 
-    // Önce o URL'e ait eski vektörleri sil
-    try {
-      await deleteVectorsByUrl(content.url);
-    } catch (error) {
-      console.warn('Eski vektörler silinirken hata:', error);
-      // Devam et, bu kritik değil
-    }
-
-    // Chunk'lar için embeddings oluştur
-    console.log(`${content.chunks.length} chunk için embedding oluşturuluyor...`);
-    const embeddings = await generateBatchEmbeddings(content.chunks);
-
-    // Metadata array'ini hazırla
-    const metadata: DocumentMetadata[] = content.chunks.map((chunk, index) => ({
-      url: content.url,
-      title: content.title,
-      timestamp: typeof content.timestamp === 'string'
-        ? content.timestamp
-        : new Date(content.timestamp).toISOString(),
-      chunkIndex: index,
-      totalChunks: content.chunks.length,
-      content: chunk, // Chunk içeriğini de metadata'ya ekle
-    }));
-
-    // Pinecone'a kaydet
-    await upsertVectors(embeddings, metadata);
-
-    // Vector ID oluştur (URL'den)
-    const vectorId = Buffer.from(content.url).toString('base64');
-
     return NextResponse.json({
       success: true,
-      vectorId,
-      chunksProcessed: content.chunks.length,
-      message: 'Döküman başarıyla vektör veritabanına kaydedildi',
+      vectorId: data.vectorId,
+      chunksProcessed: data.chunksProcessed,
+      message: data.message,
     });
   } catch (error) {
-    console.error('Embedding hatası:', error);
-
     return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : 'Bilinmeyen hata oluştu',
-        success: false
-      },
-      { status: 500 }
+      { error: error instanceof Error ? error.message : 'Bilinmeyen hata', success: false },
+      { status: 500 },
     );
   }
-}
-
-// OPTIONS metodu CORS için
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
 }
 
 export async function DELETE(request: NextRequest) {
@@ -84,27 +45,28 @@ export async function DELETE(request: NextRequest) {
     const { url } = body as { url: string };
 
     if (!url) {
+      return NextResponse.json({ error: 'URL gerekli' }, { status: 400 });
+    }
+
+    const response = await gatewayFetch('/api/rag-web/delete', {
+      method: 'POST',
+      admin: true,
+      body: JSON.stringify({ url }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
       return NextResponse.json(
-        { error: 'URL parametresi gerekli' },
-        { status: 400 }
+        { error: data.detail || 'Silme hatası', success: false },
+        { status: response.status },
       );
     }
 
-    await deleteVectorsByUrl(url);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Döküman başarıyla silindi',
-    });
+    return NextResponse.json({ success: true, message: data.message });
   } catch (error) {
-    console.error('Delete hatası:', error);
-
     return NextResponse.json(
-      {
-        error: error instanceof Error ? error.message : 'Silme hatası',
-        success: false
-      },
-      { status: 500 }
+      { error: error instanceof Error ? error.message : 'Silme hatası', success: false },
+      { status: 500 },
     );
   }
-} 
+}

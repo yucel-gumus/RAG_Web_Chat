@@ -6,10 +6,12 @@ import Button from '@/components/ui/Button';
 import { ChatMessage as ChatMessageType } from '@/types';
 
 interface ChatContainerProps {
-  onBack?: () => void; // Made optional
+  onBack?: () => void;
+  allowedUrls: string[];
+  canChat: boolean;
 }
 
-const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
+const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, allowedUrls, canChat }) => {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
@@ -33,7 +35,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
   }, []);
 
   const handleSendMessage = async (content: string) => {
-    if (!content.trim() || loading) return;
+    if (!content.trim() || loading || !canChat || allowedUrls.length === 0) return;
 
     // Add user message
     const userMessage: ChatMessageType = {
@@ -55,6 +57,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack }) => {
         body: JSON.stringify({
           message: content,
           conversationId: conversationId || undefined,
+          allowedUrls,
         }),
       });
 
