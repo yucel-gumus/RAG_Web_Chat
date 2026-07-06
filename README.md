@@ -32,7 +32,7 @@ Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğreti
 - **Lucide React** - Modern ikonlar
 
 ### Backend & AI
-- **python_backend gateway** (`api.yucelgumus.dev`) — embedding, Pinecone, Gemini (sunucu tarafı)
+- **python_backend gateway** (`python-backend-270384591051.europe-west3.run.app`) — embedding, Pinecone, Gemini (sunucu tarafı)
 - **Cheerio** — Web scraping (Next.js `/api/scrape`, anahtar gerektirmez)
 
 ## 📦 Kurulum
@@ -43,7 +43,7 @@ Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğreti
 
 ### Ortam (Vercel / `.env.local`)
 ```env
-AI_API_URL=https://api.yucelgumus.dev
+AI_API_URL=https://python-backend-270384591051.europe-west3.run.app
 GATEWAY_CLIENT_API_KEY=...
 GATEWAY_ADMIN_API_KEY=...
 ```

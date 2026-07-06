@@ -1,7 +1,7 @@
 /**
  * Server-side proxy to python_backend (Gemini Gateway).
  */
-const DEFAULT_GATEWAY_URL = 'https://api.yucelgumus.dev';
+const DEFAULT_GATEWAY_URL = 'https://python-backend-270384591051.europe-west3.run.app';
 
 export function getGatewayBaseUrl(): string {
   const url =
