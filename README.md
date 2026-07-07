@@ -1,277 +1,80 @@
-# 🤖 RAG Web Chat - Web Sitesi Bilgilerine Dayalı AI Sohbet Uygulaması
+# 🤖 RAG Web Chat (Smart Web Scraper RAG Assistant)
 
-Herhangi bir web sitesinin URL'sini girerek o sitenin içeriğini AI'ya öğretin ve site hakkında detaylı sorular sorun. Modern RAG (Retrieval-Augmented Generation) sistemi ile web sitelerinin bilgilerini anlık olarak AI'ya entegre edin.
-
-## 🌟 Özellikler
-
-### 🌐 Web Sitesi İşleme
-- **URL Girişi**: Herhangi bir web sitesinin URL'sini girerek otomatik içerik çıkarma
-- **Akıllı Scraping**: Web sayfalarından temiz metin ve başlık bilgilerini çıkarma
-- **Vektör Depolama**: Pinecone veritabanında yüksek performanslı vektör saklama
-- **Gerçek Zamanlı Takip**: İşlenen web sitelerinin canlı izlenmesi
-
-### 💬 Site Tabanlı Sohbet
-- **RAG Sistemi**: Sadece girilen web sitelerinin bilgileri temelinde doğru yanıtlar
-- **Kaynak Referansları**: Her yanıtla birlikte kaynak web sitesi bilgileri
-- **Hızlı Yanıtlar**: Google Gemini AI ile optimize edilmiş performans
-- **Türkçe Desteği**: Tam Türkçe arayüz ve etkileşim
-
-### 🎨 Modern Arayüz
-- **Responsive Tasarım**: Mobil ve masaüstü uyumlu
-- **Kullanıcı Dostu**: Sezgisel ve temiz arayüz
-- **Gerçek Zamanlı**: Canlı durum güncellemeleri
-- **Erişilebilirlik**: WCAG standartlarına uygun
-
-## 🚀 Teknolojiler
-
-### Frontend
-- **Next.js 15** - React framework
-- **React 19** - UI kütüphanesi
-- **TypeScript** - Tip güvenliği
-- **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Modern ikonlar
-
-### Backend & AI
-- **python_backend gateway** (`python-backend-270384591051.europe-west3.run.app`) — embedding, Pinecone, Gemini (sunucu tarafı)
-- **Cheerio** — Web scraping (Next.js `/api/scrape`, anahtar gerektirmez)
-
-## 📦 Kurulum
-
-### Gereksinimler
-- Node.js 18+
-- Vercel’de (veya `.env.local`) gateway anahtarları — bkz. `.env.example`
-
-### Ortam (Vercel / `.env.local`)
-```env
-AI_API_URL=https://python-backend-270384591051.europe-west3.run.app
-GATEWAY_CLIENT_API_KEY=...
-GATEWAY_ADMIN_API_KEY=...
-```
-
-### 1. Projeyi Klonlayın
-```bash
-git clone https://github.com/yucel-gumus/RAG_Web_Chat.git
-cd RAG_Web_Chat
-```
-
-### 2. Bağımlılıkları Yükleyin
-```bash
-npm install
-# veya
-yarn install
-# veya
-pnpm install
-```
-
-### 3. Ortam Değişkenlerini Ayarlayın
-Proje kök dizininde `.env.local` dosyası oluşturun:
-
-```env
-# Google Gemini AI API Key
-# Google AI Studio'dan alınacak API anahtarı
-# https://makersuite.google.com/app/apikey
-GOOGLE_API_KEY=your_google_gemini_api_key_here
-
-# Pinecone Vector Database
-# https://www.pinecone.io/
-## Environment (Vercel)
-
-Server-side only (never in the browser):
-
-- `AI_API_URL` / `GEMINI_GATEWAY_URL`
-- `GATEWAY_CLIENT_API_KEY` / `GATEWAY_ADMIN_API_KEY`
-
-Vectors and embeddings are handled by the gateway (`/api/rag-web/*`).
-
-# Uygulama URL'si (isteğe bağlı)
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### 4. Geliştirme Sunucusunu Başlatın
-```bash
-npm run dev
-# veya
-yarn dev
-# veya
-pnpm dev
-```
-
-http://localhost:3000 adresinde uygulamayı görüntüleyin.
-
-## 🚀 Deployment
-
-### Vercel ile Deploy Etme
-1. [Vercel](https://vercel.com) hesabı oluşturun
-2. GitHub repository'sini Vercel'e bağlayın
-3. Environment variables'ları Vercel dashboard'dan ekleyin
-4. Otomatik deployment başlayacak
-
-### Diğer Platformlar
-- **Netlify**: Build command: `npm run build`, Publish directory: `out`
-- **Railway**: Docker desteği ile kolay deployment
-- **Heroku**: Node.js buildpack ile deploy edilebilir
-
-## 🔧 Konfigürasyon
-
-### Pinecone Kurulumu
-1. [Pinecone](https://pinecone.io) hesabı oluşturun
-2. Yeni bir index oluşturun:
-   - **Dimension**: 768
-   - **Metric**: cosine
-   - **Pod Type**: s1.x1 (başlangıç için)
-
-### Google AI Studio
-1. [Google AI Studio](https://makersuite.google.com) hesabı oluşturun
-2. API anahtarı oluşturun
-3. Gemini Pro modeline erişim sağlayın
-
-## 📖 Kullanım
-
-### 1. Web Sitesi Ekleme
-- Ana sayfada URL input alanına istediğiniz web sitesinin URL'sini girin
-- "Web Sitesi Ekle" butonuna tıklayın
-- Sistem otomatik olarak web sitesinin içeriğini çıkarır ve vektör veritabanına kaydeder
-
-### 2. Sohbet Etme
-- Web siteleri eklendikten sonra "Sohbet Et" butonuna tıklayın
-- Soru alanına web siteleri hakkında sorularınızı yazın
-- AI sadece eklenen web sitelerinin bilgileri temelinde yanıt verir
-
-### 3. Web Sitesi Yönetimi
-- Ana sayfada eklenen web sitelerini görüntüleyin
-- İstenmeyen web sitelerini silin
-- Pinecone veritabanı durumunu takip edin
-
-## 🏗️ Proje Yapısı
-
-```
-src/
-├── app/
-│   ├── api/              # API rotaları
-│   │   ├── chat/         # Sohbet API'si
-│   │   ├── documents/    # Web sitesi yönetimi
-│   │   ├── embed/        # Vektör embedding
-│   │   └── scrape/       # Web scraping
-│   ├── globals.css       # Global stiller
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Ana sayfa
-├── components/
-│   ├── chat/             # Sohbet komponentleri
-│   │   ├── ChatContainer.tsx
-│   │   ├── ChatInput.tsx
-│   │   └── ChatMessage.tsx
-│   ├── ui/               # UI komponentleri
-│   │   ├── Button.tsx
-│   │   ├── Card.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   └── Input.tsx
-│   └── url-input/        # URL input komponentleri
-│       └── UrlInput.tsx
-├── lib/                  # Yardımcı kütüphaneler
-│   ├── gemini.ts         # Google Gemini AI
-│   ├── pinecone.ts       # Pinecone işlemleri
-│   └── scraper.ts        # Web scraping
-└── types/
-    └── index.ts          # TypeScript tipleri
-```
-
-## 🔌 API Endpoints
-
-### POST /api/scrape
-Web sitesi içeriğini çıkarır.
-```json
-{
-  "url": "https://example.com/article"
-}
-```
-
-### POST /api/embed
-İçeriği vektör veritabanına kaydeder.
-```json
-{
-  "content": {
-    "title": "Sayfa Başlığı",
-    "text": "Sayfa içeriği...",
-    "url": "https://example.com"
-  }
-}
-```
-
-### POST /api/chat
-Sohbet mesajları gönderir.
-```json
-{
-  "message": "Kullanıcı sorusu",
-  "conversationId": "optional_conversation_id"
-}
-```
-
-### GET /api/documents
-Pinecone veritabanı istatistiklerini getirir.
-
-## 🎯 Özelleştirme
-
-### Tema Değiştirme
-`src/app/globals.css` dosyasında Tailwind CSS değişkenlerini düzenleyin.
-
-### AI Modeli Değiştirme
-`src/lib/gemini.ts` dosyasında farklı Gemini modelleri deneyebilirsiniz.
-
-### Vektör Boyutları
-Pinecone index'i farklı embedding modelleri için yeniden konfigüre edebilirsiniz.
-
-## 🔍 Sorun Giderme
-
-### Yaygın Sorunlar
-
-**Pinecone Bağlantı Hatası**
-```bash
-# .env.local dosyasındaki anahtarları kontrol edin
-# Pinecone index'inin aktif olduğundan emin olun
-```
-
-**Google AI API Hatası**
-```bash
-# API anahtarının geçerli olduğundan emin olun
-# Gemini modeline erişim iznini kontrol edin
-```
-
-**Web Scraping Hatası**
-```bash
-# URL'nin erişilebilir olduğundan emin olun
-# CORS politikalarını kontrol edin
-```
-
-## 📊 Performans İpuçları
-
-- **Web Sitesi Boyutu**: Çok büyük web sitelerinin içeriği otomatik olarak parçalara bölünür
-- **Vektör Limitleri**: Pinecone planınızın limitlerini takip edin
-- **API Quotas**: Google AI API kullanım limitlerini izleyin
-- **Site Seçimi**: Temiz ve yapılandırılmış içerikli siteleri tercih edin
-
-## 🤝 Katkıda Bulunma
-
-1. Bu repository'yi fork edin: [RAG_Web_Chat](https://github.com/yucel-gumus/RAG_Web_Chat)
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
-4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
-5. Pull Request açın
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
-
-## 🔗 Bağlantılar
-
-- [Next.js Dokümantasyonu](https://nextjs.org/docs)
-- [Google Gemini AI](https://makersuite.google.com)
-- [Pinecone](https://pinecone.io)
-- [Tailwind CSS](https://tailwindcss.com)
-
-## 👨‍💻 Geliştirici
-
-**Yücel Gümüş** - [GitHub](https://github.com/yucel-gumus)
+RAG Web Chat; herhangi bir web sitesinin URL'sini sisteme girerek içeriğini yapay zekaya (Gemini AI) öğretmenizi ve o web sitesine özel sorular sormanızı sağlayan gelişmiş bir **RAG (Retrieval-Augmented Generation)** web uygulamasıdır. 
 
 ---
 
-⭐ Bu projeyi beğendiyseniz star vermeyi unutmayın!
+## 🌟 Öne Çıkan Özellikler
+
+* 🌐 **URL Tabanlı Öğrenme:** Herhangi bir genel web sitesinin URL'sini vererek saniyeler içinde içeriğini analiz edebilirsiniz.
+* 🕷️ **Cheerio Web Scraping:** `cheerio` kütüphanesi kullanılarak web sayfalarındaki gereksiz kodlar (CSS, JS, reklamlar, menüler vb.) temizlenir, sadece saf metin ve hiyerarşik başlıklar ayıklanır.
+* 🧠 **Vektörleştirme & Pinecone DB:** Ayıklanan metinler parçalara (chunks) bölünür, Gemini embedding modeliyle vektör haline getirilerek **Pinecone Vektör Veritabanı** üzerinde saklanır.
+* 💬 **Referanslı ve Kaynaklı Sohbet:** Ajan, sorduğunuz sorulara sadece öğrettiğiniz web sitelerinin verilerine dayanarak cevap verir ve cevapların altında **kaynak gösterilen (citation) orijinal URL linklerini** listeler.
+* 📊 **Vektör Veri Yönetimi:** Eklediğiniz web sitelerini listeleyebilir, veritabanından silebilir ve indeks durumunu takip edebilirsiniz.
+
+---
+
+## 🏗️ Mimarî Akış (RAG Pipeline)
+
+```
+[ URL Girişi ] ──► [ Cheerio Scraper ] ──► [ Metin Ayrıştırma (Next.js) ]
+                                                   │
+                                             (Metin Parçaları)
+                                                   ▼
+[ Pinecone DB ] ◄──(Vektör Kaydı / Cosine)─── [ Python API Gateway (Embedding) ]
+      │
+      ├─► (Benzerlik Sorgulama / K-NN) ──► [ Gemini LLM ] ──(Streaming SSE)──► [ Sohbet Ekranı ]
+```
+
+1. **Scrape (Kazıma):** Cheerio hedef sayfayı indirir ve HTML'den temiz metin çıkartır.
+2. **Chunk & Embed (Parçalama):** Metinler anlamsal parçalara bölünür ve Gemini Embedding modeli ile 768 boyutlu vektörlere dönüştürülür.
+3. **Index (İndeksleme):** Vektörler Pinecone DB'de saklanır.
+4. **Retrieve & Respond (Getirme ve Cevaplama):** Soru sorulduğunda Pinecone üzerinden cosine similarity ile en alakalı parçalar bulunur, Gemini'a bağlam (context) olarak verilerek yanıt akışkan (streaming) şekilde üretilir.
+
+---
+
+## 🛠️ Teknoloji Stack
+
+* **Frontend:** Next.js 15, React 19, TypeScript.
+* **Tasarım:** TailwindCSS v4, Lucide Icons, Modern responsive arayüz.
+* **Scraping:** Cheerio (API routes üzerinden client-side bypass).
+* **Vektör Veritabanı:** Pinecone Vector Database.
+* **Yapay Zeka & Gateway:** Google Gemini API, Python API Gateway entegrasyonu.
+
+---
+
+## 🚀 Kurulum ve Yerel Çalıştırma
+
+### 1. Bağımlılıkları Yükleyin
+```bash
+git clone https://github.com/yucel-gumus/RAG_Web_Chat.git
+cd RAG_Web_Chat
+npm install
+```
+
+### 2. Çevresel Değişkenler (`.env.local`)
+Kök dizinde `.env.local` oluşturun ve API geçidinizin adreslerini ekleyin:
+
+```env
+# Gemini ve Pinecone işlemlerini yürüten Python API Gateway adresi
+AI_API_URL=https://python-backend-270384591051.europe-west3.run.app
+
+# Sohbet ve Raporlama Yetkileri
+GATEWAY_CLIENT_API_KEY=your_gateway_client_key
+GATEWAY_ADMIN_API_KEY=your_gateway_admin_key
+
+# Uygulama Çalışma Adresi (Geliştirme için)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 3. Uygulamayı Başlatın
+```bash
+npm run dev
+```
+Uygulama `http://localhost:3000` adresinde başlayacaktır.
+
+---
+
+## 🔗 Canlı Bağlantılar
+* **Canlı Demo:** [https://rag-web-chat.vercel.app/](https://rag-web-chat.vercel.app/)
+* **Geliştirici GitHub:** [https://github.com/yucel-gumus](https://github.com/yucel-gumus)
