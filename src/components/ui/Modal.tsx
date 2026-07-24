@@ -1,4 +1,3 @@
-
 import React, { PropsWithChildren } from 'react';
 import { X } from 'lucide-react';
 
@@ -18,25 +17,25 @@ const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center p-4 animate-in fade-in-0"
+      className="fixed inset-0 bg-[#2D1D19]/60 backdrop-blur-xs z-50 flex justify-center items-center p-4 transition-opacity animate-in fade-in-0 duration-200"
       onClick={onClose}
     >
       <div
-        className="relative bg-slate-50 rounded-2xl shadow-lg border border-slate-200/80 w-full max-w-3xl max-h-[90vh] flex flex-col animate-in fade-in-0 zoom-in-95"
+        className="relative bg-[#FFEBD3] rounded-3xl shadow-xl border border-[#FFB6A6] w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-slate-200">
-          <h3 className="text-xl font-semibold text-slate-900">{title}</h3>
+        <div className="flex justify-between items-center p-6 bg-[#FFB6A6]/40 border-b border-[#FFB6A6]/60">
+          <h3 className="text-lg font-bold text-[#2D1D19]">{title}</h3>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 p-1.5 rounded-full transition-all"
+            className="text-[#5D433E] hover:text-[#2D1D19] hover:bg-[#FFB6A6] p-2 rounded-full transition-all active:scale-95"
             aria-label="Kapat"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
-        
+
         {/* Content */}
         <div className="p-6 overflow-y-auto">{children}</div>
       </div>
@@ -44,4 +43,4 @@ const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
   );
 };
 
-export default Modal; 
+export default Modal;

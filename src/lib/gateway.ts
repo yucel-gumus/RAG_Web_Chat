@@ -16,7 +16,10 @@ export function getGatewayClientApiKey(): string {
     process.env.GATEWAY_CLIENT_API_KEY ||
     process.env.CLIENT_API_KEY ||
     '';
-  if (!key) throw new Error('GATEWAY_CLIENT_API_KEY is not configured.');
+  if (!key) {
+    console.error('[gateway] Missing GATEWAY_CLIENT_API_KEY environment variable.');
+    throw new Error('GATEWAY_CLIENT_API_KEY is not configured.');
+  }
   return key;
 }
 
@@ -24,8 +27,13 @@ export function getGatewayAdminApiKey(): string {
   const key =
     process.env.GATEWAY_ADMIN_API_KEY ||
     process.env.ADMIN_API_KEY ||
+    process.env.GATEWAY_CLIENT_API_KEY ||
+    process.env.CLIENT_API_KEY ||
     '';
-  if (!key) throw new Error('GATEWAY_ADMIN_API_KEY is not configured.');
+  if (!key) {
+    console.error('[gateway] Missing GATEWAY_ADMIN_API_KEY / GATEWAY_CLIENT_API_KEY environment variable.');
+    throw new Error('GATEWAY_ADMIN_API_KEY is not configured.');
+  }
   return key;
 }
 
@@ -40,5 +48,12 @@ export async function gatewayFetch(
     headers.set('Content-Type', 'application/json');
   }
   headers.set('X-API-Key', apiKey);
-  return fetch(`${getGatewayBaseUrl()}${path}`, { ...fetchInit, headers });
+
+  const targetUrl = `${getGatewayBaseUrl()}${path}`;
+  try {
+    return await fetch(targetUrl, { ...fetchInit, headers });
+  } catch (error) {
+    console.error(`[gatewayFetch] Connection error to ${targetUrl}:`, error);
+    throw error;
+  }
 }

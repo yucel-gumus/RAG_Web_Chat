@@ -29,14 +29,13 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const trimmedMessage = message.trim();
     if (!trimmedMessage || loading || disabled) return;
-    
+
     onSendMessage(trimmedMessage);
     setMessage('');
-    
-    // Reset textarea height
+
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -54,9 +53,9 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
-      <form onSubmit={handleSubmit} className="flex gap-3 items-end">
-        <div className="flex-1">
+    <div className="border-t border-[#FFB6A6]/60 bg-[#FFEBD3]/90 backdrop-blur-xs p-4">
+      <form onSubmit={handleSubmit} className="flex gap-3 items-end max-w-4xl mx-auto">
+        <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
             value={message}
@@ -66,27 +65,26 @@ const ChatInput: React.FC<ChatInputProps> = ({
             disabled={disabled || loading}
             rows={1}
             className={`
-              w-full resize-none rounded-lg border border-gray-300 px-3 py-2
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
-              placeholder-gray-600 text-sm text-gray-900
+              w-full resize-none rounded-2xl border border-[#FFB6A6] bg-[#FFF7ED] px-4 py-3 text-sm text-[#2D1D19]
+              placeholder:text-[#856761] focus:outline-none focus:ring-2 focus:ring-[#9BCEC1] focus:border-[#9BCEC1]
+              disabled:opacity-60 disabled:cursor-not-allowed shadow-xs transition-all
             `}
             style={{ maxHeight: '120px' }}
           />
-          
-          {/* Character limit indicator */}
+
           {message.length > 500 && (
-            <div className="text-xs text-gray-500 mt-1 text-right">
+            <div className="text-xs text-[#856761] mt-1 text-right">
               {message.length}/1000
             </div>
           )}
         </div>
-        
+
         <Button
           type="submit"
           disabled={!message.trim() || loading || disabled}
           loading={loading}
-          className="px-3 py-2"
+          variant="primary"
+          className="h-11 px-4 rounded-2xl shadow-sm"
         >
           {loading ? (
             <Square className="h-4 w-4" />
@@ -95,18 +93,16 @@ const ChatInput: React.FC<ChatInputProps> = ({
           )}
         </Button>
       </form>
-      
-      <div className="flex items-center justify-between mt-2">
-        <div className="text-xs text-gray-500">
-          <span className="font-medium">Shift + Enter</span> ile yeni satır
+
+      <div className="flex items-center justify-between mt-2 max-w-4xl mx-auto px-1">
+        <div className="text-xs text-[#5D433E]">
+          <span className="font-semibold text-[#2D1D19]">Shift + Enter</span> ile yeni satır
         </div>
-        
+
         {loading && (
-          <div className="text-xs text-gray-500 flex items-center gap-1">
-            <div className="animate-pulse w-1 h-1 bg-gray-400 rounded-full"></div>
-            <div className="animate-pulse w-1 h-1 bg-gray-400 rounded-full delay-100"></div>
-            <div className="animate-pulse w-1 h-1 bg-gray-400 rounded-full delay-200"></div>
-            <span className="ml-1">AI yanıt veriyor...</span>
+          <div className="text-xs text-[#11342C] bg-[#9BCEC1]/30 px-3 py-1 rounded-full border border-[#9BCEC1] flex items-center gap-1.5 font-medium animate-pulse">
+            <div className="w-1.5 h-1.5 bg-[#11342C] rounded-full"></div>
+            <span>AI düşünüyor ve içerik sorguluyor...</span>
           </div>
         )}
       </div>
@@ -114,4 +110,4 @@ const ChatInput: React.FC<ChatInputProps> = ({
   );
 };
 
-export default ChatInput; 
+export default ChatInput;

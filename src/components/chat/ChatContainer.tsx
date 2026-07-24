@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, Trash2, ArrowLeft } from 'lucide-react';
+import { MessageCircle, Trash2, ArrowLeft, Sparkles } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import ChatInput from './ChatInput';
 import Button from '@/components/ui/Button';
@@ -16,12 +16,10 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
   const [conversationId, setConversationId] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Initialize with welcome message
   useEffect(() => {
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
@@ -36,7 +34,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || loading || !canChat) return;
 
-    // Add user message
     const userMessage: ChatMessageType = {
       id: `user_${Date.now()}`,
       role: 'user',
@@ -66,7 +63,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
 
       const data = await response.json();
 
-      // Add assistant message
       const assistantMessage: ChatMessageType = {
         id: `assistant_${Date.now()}`,
         role: 'assistant',
@@ -77,13 +73,10 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Update conversation ID
       if (data.conversationId && data.conversationId !== conversationId) {
         setConversationId(data.conversationId);
       }
-
     } catch (error) {
-      // Add error message
       const errorMessage: ChatMessageType = {
         id: `error_${Date.now()}`,
         role: 'assistant',
@@ -102,7 +95,6 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
     setMessages([]);
     setConversationId('');
 
-    // Re-add welcome message
     const welcomeMessage: ChatMessageType = {
       id: `welcome_${Date.now()}`,
       role: 'assistant',
@@ -114,12 +106,12 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Chat Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+    <div className="h-full flex flex-col bg-[#FFEBD3]">
+      {/* Header */}
+      <div className="bg-[#FFB6A6]/40 border-b border-[#FFB6A6]/70 p-4 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {onBack && ( // Conditionally render back button
+            {onBack && (
               <Button
                 variant="secondary"
                 size="sm"
@@ -131,11 +123,19 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
               </Button>
             )}
 
-            <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-blue-600" />
-              <h2 className="text-lg font-semibold text-gray-900">
-                Sohbet
-              </h2>
+            <div className="flex items-center gap-2.5">
+              <div className="bg-[#9BCEC1] p-2 rounded-xl border border-[#86BBAE]">
+                <MessageCircle className="h-5 w-5 text-[#11342C]" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-[#2D1D19] flex items-center gap-1.5">
+                  KENSAI Sohbet Akışı
+                  <Sparkles className="h-4 w-4 text-[#5D433E]" />
+                </h2>
+                <p className="text-xs text-[#5D433E]">
+                  {canChat ? 'Vektör Veritabanı Aktif' : 'Lütfen önce web sitesi ekleyin'}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -144,34 +144,32 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
               variant="danger"
               size="sm"
               onClick={handleClearChat}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
               Temizle
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 p-4 min-h-0">
-        <div className="max-w-4xl mx-auto space-y-4">
-          {messages.map((message) => (
+      {/* Messages Scroll Area */}
+      <div className="flex-1 overflow-y-auto p-5 min-h-0">
+        <div className="max-w-4xl mx-auto space-y-5">
+          {messages.map(message => (
             <ChatMessage key={message.id} message={message} />
           ))}
 
-          {/* Loading indicator */}
+          {/* Loading Indicator */}
           {loading && (
-            <div className="flex gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center">
+            <div className="flex gap-3 items-center">
+              <div className="w-9 h-9 rounded-2xl bg-[#FFB6A6] text-[#2D1D19] flex items-center justify-center border border-[#EFA696]">
                 <MessageCircle className="h-4 w-4" />
               </div>
-              <div className="flex-1">
-                <div className="inline-block bg-white border border-gray-200 text-gray-900 p-3 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                    <span className="text-sm text-gray-600">AI düşünüyor...</span>
-                  </div>
+              <div className="bg-[#FFF7ED] border border-[#FFB6A6] p-3.5 rounded-2xl shadow-xs">
+                <div className="flex items-center gap-2 text-sm text-[#2D1D19] font-medium">
+                  <div className="animate-spin h-4 w-4 border-2 border-[#9BCEC1] border-t-transparent rounded-full"></div>
+                  <span>KENSAI web sitelerini tarıyor ve anlıyor...</span>
                 </div>
               </div>
             </div>
@@ -185,10 +183,15 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
       <ChatInput
         onSendMessage={handleSendMessage}
         loading={loading}
-        placeholder="Web sitelerinden öğrendiğim bilgiler hakkında bir soru sorun..."
+        disabled={!canChat}
+        placeholder={
+          canChat
+            ? 'Web sitelerinden öğrendiğim bilgiler hakkında soru sorun...'
+            : 'Sohbet etmek için lütfen sol panelden bir web sitesi ekleyin.'
+        }
       />
     </div>
   );
 };
 
-export default ChatContainer; 
+export default ChatContainer;

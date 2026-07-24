@@ -15,20 +15,19 @@ const UrlInput: React.FC<UrlInputProps> = ({ onUrlSubmit, loading = false }) => 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // URL doğrulama
+
     if (!url.trim()) {
-      setError('URL gerekli');
+      setError('URL alanı boş bırakılamaz.');
       return;
     }
-    
+
     try {
       new URL(url);
     } catch {
       setError('Geçerli bir URL girin (http:// veya https:// ile başlamalı)');
       return;
     }
-    
+
     setError('');
     onUrlSubmit(url.trim());
   };
@@ -41,14 +40,16 @@ const UrlInput: React.FC<UrlInputProps> = ({ onUrlSubmit, loading = false }) => 
   };
 
   return (
-    <Card>
+    <Card className="bg-[#FFB6A6]/20 border-[#FFB6A6]">
       <Card.Header>
-        <Card.Title className="flex items-center gap-2">
-          <Link className="h-5 w-5 text-blue-600" />
-          URL Ekle
+        <Card.Title className="flex items-center gap-2 text-[#2D1D19]">
+          <div className="p-1.5 bg-[#9BCEC1] rounded-lg border border-[#86BBAE]">
+            <Link className="h-4 w-4 text-[#11342C]" />
+          </div>
+          Web Sayfası URL Ekle
         </Card.Title>
       </Card.Header>
-      
+
       <Card.Content>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -57,18 +58,18 @@ const UrlInput: React.FC<UrlInputProps> = ({ onUrlSubmit, loading = false }) => 
             value={url}
             onChange={handleUrlChange}
             error={error}
-            helperText="Web sayfasının URL'sini girin. İçerik çekilip vektör veritabanına kaydedilecek."
+            helperText="Web sayfasının içeriği taranacak, bölünecek ve vektör veritabanına işlenecektir."
             disabled={loading}
           />
-          
-          <Button 
-            type="submit" 
+
+          <Button
+            type="submit"
             loading={loading}
             disabled={!url.trim() || loading}
-            className="w-full"
+            className="w-full shadow-sm"
           >
             <Plus className="h-4 w-4 mr-2" />
-            {loading ? 'İşleniyor...' : 'Çek ve Kaydet'}
+            {loading ? 'İçerik Çekiliyor...' : 'İçeriği Çek ve Veritabanına Kaydet'}
           </Button>
         </form>
       </Card.Content>
@@ -90,12 +91,12 @@ const UrlProcessing: React.FC<UrlProcessingProps> = ({ status }) => {
   const getStepIcon = () => {
     switch (status.step) {
       case 'success':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-[#11342C]" />;
       case 'error':
-        return <XCircle className="h-5 w-5 text-red-600" />;
+        return <XCircle className="h-5 w-5 text-[#2D1D19]" />;
       default:
         return (
-          <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full" />
+          <div className="animate-spin h-5 w-5 border-2 border-[#11342C] border-t-transparent rounded-full" />
         );
     }
   };
@@ -103,23 +104,23 @@ const UrlProcessing: React.FC<UrlProcessingProps> = ({ status }) => {
   const getStepColor = () => {
     switch (status.step) {
       case 'success':
-        return 'text-green-700 bg-green-50 border-green-200';
+        return 'text-[#11342C] bg-[#9BCEC1]/40 border-[#9BCEC1]';
       case 'error':
-        return 'text-red-700 bg-red-50 border-red-200';
+        return 'text-[#2D1D19] bg-[#E69B8B]/40 border-[#E69B8B]';
       default:
-        return 'text-blue-700 bg-blue-50 border-blue-200';
+        return 'text-[#2D1D19] bg-[#FFB6A6]/40 border-[#FFB6A6]';
     }
   };
 
   return (
-    <div className={`flex items-center gap-3 p-4 rounded-lg border ${getStepColor()}`}>
+    <div className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${getStepColor()}`}>
       {getStepIcon()}
-      <div className="flex-1">
-        <p className="font-medium">
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-sm">
           {status.message}
         </p>
         {status.url && (
-          <p className="text-sm opacity-75 mt-1">
+          <p className="text-xs opacity-80 truncate mt-0.5">
             {status.url}
           </p>
         )}
@@ -132,4 +133,4 @@ export { UrlProcessing };
 
 export default Object.assign(UrlInput, {
   Processing: UrlProcessing,
-}); 
+});

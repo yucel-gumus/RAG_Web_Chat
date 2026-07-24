@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* 60% Dominant Canvas & Background (#FFEBD3) */
+  --bg-dominant: #FFEBD3;
+  --bg-dominant-subtle: #FFF7ED;
+  --bg-dominant-hover: #F8E2C6;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* 30% Secondary Surface, Cards & Structural Elements (#FFB6A6) */
+  --surface-secondary: #FFB6A6;
+  --surface-secondary-light: #FFC8BD;
+  --surface-secondary-dark: #E69B8B;
+  --border-secondary: #EFA696;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* 10% Accent Color - Primary Actions, Highlights & Badges (#9BCEC1) */
+  --accent-primary: #9BCEC1;
+  --accent-hover: #86BBAE;
+  --accent-active: #72A79A;
+  --accent-light: #E2F3EE;
+
+  /* Semantic Typography derived from warm tones for WCAG contrast */
+  --text-main: #2D1D19;
+  --text-secondary: #5D433E;
+  --text-muted: #856761;
+  --text-on-accent: #11342C;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-dominant);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Custom scrollbars matching theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dominant);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-secondary-dark);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }

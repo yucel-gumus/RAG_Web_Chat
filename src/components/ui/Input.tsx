@@ -18,13 +18,14 @@ const Input: React.FC<InputProps> = ({
   const inputId = id || reactId;
 
   const inputClasses = `
-    block w-full px-3 py-2 border rounded-md shadow-sm 
-    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+    block w-full px-4 py-2.5 bg-[#FFF7ED] text-[#2D1D19] border rounded-xl shadow-xs transition-all duration-200
+    placeholder:text-[#856761] text-sm
+    focus:outline-none focus:ring-2 focus:ring-[#9BCEC1] focus:border-[#9BCEC1]
     ${error
-      ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500'
-      : 'border-gray-300 text-gray-900 placeholder-gray-400'
+      ? 'border-[#E69B8B] text-[#2D1D19] focus:ring-[#E69B8B]'
+      : 'border-[#EFA696]'
     }
-    disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed
+    disabled:opacity-60 disabled:cursor-not-allowed
     ${className}
   `;
 
@@ -33,7 +34,7 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-xs font-semibold uppercase tracking-wider text-[#5D433E] mb-1.5"
         >
           {label}
         </label>
@@ -46,13 +47,13 @@ const Input: React.FC<InputProps> = ({
       />
 
       {error && (
-        <p className="mt-1 text-sm text-red-600" role="alert">
+        <p className="mt-1.5 text-xs font-medium text-[#2D1D19] bg-[#E69B8B]/30 p-2 rounded-lg border border-[#E69B8B]" role="alert">
           {error}
         </p>
       )}
 
       {helperText && !error && (
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1.5 text-xs text-[#5D433E]">
           {helperText}
         </p>
       )}
@@ -60,4 +61,4 @@ const Input: React.FC<InputProps> = ({
   );
 };
 
-export default Input; 
+export default Input;

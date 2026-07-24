@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   const classes = `
-    bg-white rounded-lg border border-gray-200 shadow-sm
+    bg-[#FFB6A6]/20 backdrop-blur-xs rounded-2xl border border-[#FFB6A6]/60 shadow-xs
     ${paddingClasses[padding]}
     ${className}
   `;
@@ -40,7 +40,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`border-b border-gray-200 pb-4 mb-4 ${className}`}>
+    <div className={`border-b border-[#FFB6A6]/50 pb-4 mb-4 ${className}`}>
       {children}
     </div>
   );
@@ -56,7 +56,7 @@ const CardTitle: React.FC<CardTitleProps> = ({
   className = '',
 }) => {
   return (
-    <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    <h3 className={`text-base font-semibold text-[#2D1D19] tracking-tight ${className}`}>
       {children}
     </h3>
   );
@@ -72,7 +72,7 @@ const CardContent: React.FC<CardContentProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`text-gray-900 ${className}`}>
+    <div className={`text-[#2D1D19] text-sm ${className}`}>
       {children}
     </div>
   );
@@ -82,4 +82,4 @@ export default Object.assign(Card, {
   Header: CardHeader,
   Title: CardTitle,
   Content: CardContent,
-}); 
+});

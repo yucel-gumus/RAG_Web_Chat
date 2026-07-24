@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { scrapeUrl } from '@/lib/scraper';
-import { assertSafePublicUrl } from '@/lib/ssrf-guard';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,8 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const safeUrl = await assertSafePublicUrl(url);
-    const scrapedContent = await scrapeUrl(safeUrl);
+    const scrapedContent = await scrapeUrl(url);
 
     return NextResponse.json({
       success: true,
