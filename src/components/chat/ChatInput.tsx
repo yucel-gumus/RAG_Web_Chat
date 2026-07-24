@@ -102,7 +102,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
         {loading && (
           <div className="text-xs text-[#11342C] bg-[#9BCEC1]/30 px-3 py-1 rounded-full border border-[#9BCEC1] flex items-center gap-1.5 font-medium animate-pulse">
             <div className="w-1.5 h-1.5 bg-[#11342C] rounded-full"></div>
-            <span>AI düşünüyor ve içerik sorguluyor...</span>
+            <span>KENSAI düşünüyor ve içerik sorguluyor...</span>
           </div>
         )}
       </div>
