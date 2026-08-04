@@ -26,11 +26,16 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
+        <div className="flex-1">
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </div>
+        <footer className="w-full py-3 text-center text-xs text-gray-500 border-t border-gray-200/20">
+          <p>Geliştirici: <a href="https://www.yucelgumus.dev/" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-gray-700 transition-colors">Yücel Gümüş</a></p>
+        </footer>
       </body>
     </html>
   );
