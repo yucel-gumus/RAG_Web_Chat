@@ -7,6 +7,8 @@ import {
   requireTenantId,
 } from '@/lib/tenant';
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const { tenantId, isNew } = getOrCreateTenantId(request);

@@ -3,6 +3,8 @@ import { gatewayFetch } from '@/lib/gateway';
 import { ChatRequest, ChatResponse } from '@/types';
 import { requireTenantId } from '@/lib/tenant';
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   try {
     const tenantId = requireTenantId(request);
