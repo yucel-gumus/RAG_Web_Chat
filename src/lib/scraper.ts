@@ -33,7 +33,7 @@ const chunkText = (text: string, chunkSize: number = 2000, overlap: number = 400
   let startIndex = 0;
 
   while (startIndex < text.length) {
-    let endIndex = startIndex + chunkSize;
+    let endIndex = Math.min(startIndex + chunkSize, text.length);
 
     if (endIndex < text.length) {
       const lastSpaceIndex = text.lastIndexOf(' ', endIndex);
@@ -47,9 +47,10 @@ const chunkText = (text: string, chunkSize: number = 2000, overlap: number = 400
       chunks.push(chunk);
     }
 
-    startIndex = endIndex - overlap;
-    if (startIndex < 0) startIndex = 0;
-    if (startIndex >= text.length) break;
+    if (endIndex >= text.length) break;
+
+    const nextStart = endIndex - overlap;
+    startIndex = Math.max(startIndex + 1, nextStart);
   }
 
   return chunks;
