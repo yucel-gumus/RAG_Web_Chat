@@ -40,11 +40,11 @@ const UrlInput: React.FC<UrlInputProps> = ({ onUrlSubmit, loading = false }) => 
   };
 
   return (
-    <Card className="bg-[#FFB6A6]/20 border-[#FFB6A6]">
+    <Card className="bg-[#DCE3EA]/70 border-[#BCC7D2]">
       <Card.Header>
-        <Card.Title className="flex items-center gap-2 text-[#2D1D19]">
-          <div className="p-1.5 bg-[#9BCEC1] rounded-lg border border-[#86BBAE]">
-            <Link className="h-4 w-4 text-[#11342C]" />
+        <Card.Title className="flex items-center gap-2 text-[#253341]">
+          <div className="p-1.5 bg-[#EC7D55] rounded-lg border border-[#AB421C]/30">
+            <Link className="h-4 w-4 text-[#253341]" />
           </div>
           Web Sayfası URL Ekle
         </Card.Title>
@@ -91,12 +91,12 @@ const UrlProcessing: React.FC<UrlProcessingProps> = ({ status }) => {
   const getStepIcon = () => {
     switch (status.step) {
       case 'success':
-        return <CheckCircle className="h-5 w-5 text-[#11342C]" />;
+        return <CheckCircle className="h-5 w-5 text-[#253341]" />;
       case 'error':
-        return <XCircle className="h-5 w-5 text-[#2D1D19]" />;
+        return <XCircle className="h-5 w-5 text-[#AB421C]" />;
       default:
         return (
-          <div className="animate-spin h-5 w-5 border-2 border-[#11342C] border-t-transparent rounded-full" />
+          <div className="animate-spin h-5 w-5 border-2 border-[#EC7D55] border-t-transparent rounded-full" />
         );
     }
   };
@@ -104,16 +104,16 @@ const UrlProcessing: React.FC<UrlProcessingProps> = ({ status }) => {
   const getStepColor = () => {
     switch (status.step) {
       case 'success':
-        return 'text-[#11342C] bg-[#9BCEC1]/40 border-[#9BCEC1]';
+        return 'text-[#253341] bg-[#DBE6DD] border-[#BCC7D2]';
       case 'error':
-        return 'text-[#2D1D19] bg-[#E69B8B]/40 border-[#E69B8B]';
+        return 'text-[#AB421C] bg-[#F2A488]/25 border-[#AB421C]';
       default:
-        return 'text-[#2D1D19] bg-[#FFB6A6]/40 border-[#FFB6A6]';
+        return 'text-[#253341] bg-[#DCE3EA] border-[#BCC7D2]';
     }
   };
 
   return (
-    <div className={`flex items-center gap-3 p-4 rounded-xl border transition-all ${getStepColor()}`}>
+    <div className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-200 ${getStepColor()}`}>
       {getStepIcon()}
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-sm">

@@ -1,28 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  /* 60% Dominant Canvas & Background (#FFEBD3) */
-  --bg-dominant: #FFEBD3;
-  --bg-dominant-subtle: #FFF7ED;
-  --bg-dominant-hover: #F8E2C6;
+  /* 60% Dominant (Acik Sis Yesili) */
+  --bg-canvas-light: #F5F9F5;
+  --bg-dominant: #EDF3EE;
+  --bg-dominant-hover: #DBE6DD;
 
-  /* 30% Secondary Surface, Cards & Structural Elements (#FFB6A6) */
-  --surface-secondary: #FFB6A6;
-  --surface-secondary-light: #FFC8BD;
-  --surface-secondary-dark: #E69B8B;
-  --border-secondary: #EFA696;
+  /* 30% Secondary (Kullu Arduvaz) */
+  --surface-secondary: #DCE3EA;
+  --border-secondary: #BCC7D2;
+  --text-muted: #3E5164;
+  --text-main: #253341;
 
-  /* 10% Accent Color - Primary Actions, Highlights & Badges (#9BCEC1) */
-  --accent-primary: #9BCEC1;
-  --accent-hover: #86BBAE;
-  --accent-active: #72A79A;
-  --accent-light: #E2F3EE;
-
-  /* Semantic Typography derived from warm tones for WCAG contrast */
-  --text-main: #2D1D19;
-  --text-secondary: #5D433E;
-  --text-muted: #856761;
-  --text-on-accent: #11342C;
+  /* 10% Accent (Kiremit-Mercan) */
+  --accent-soft: #F2A488;
+  --accent-primary: #EC7D55;
+  --accent-hover: #AB421C;
 }
 
 body {
@@ -33,6 +26,11 @@ body {
   margin: 0;
 }
 
+::selection {
+  background-color: var(--accent-soft);
+  color: var(--text-main);
+}
+
 /* Custom scrollbars matching theme */
 ::-webkit-scrollbar {
   width: 6px;
@@ -40,11 +38,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-dominant);
+  background: rgba(188, 199, 210, 0.35);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-secondary-dark);
+  background: var(--border-secondary);
   border-radius: 9999px;
 }
 

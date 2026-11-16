@@ -131,22 +131,22 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-[#FFEBD3] text-[#2D1D19] flex flex-col overflow-hidden font-sans">
-      {/* Navbar (30% Surface Accent #FFB6A6) */}
-      <header className="bg-[#FFB6A6] border-b border-[#EFA696] px-6 py-3.5 shadow-xs">
+    <div className="h-screen bg-[#EDF3EE] text-[#253341] flex flex-col overflow-hidden font-sans">
+      {/* Navbar (30% Secondary Surface #DCE3EA) */}
+      <header className="bg-[#DCE3EA] border-b border-[#BCC7D2] px-6 py-3.5 shadow-xs">
         <div className="flex items-center justify-between max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
-            <div className="bg-[#9BCEC1] p-2.5 rounded-2xl border border-[#86BBAE] shadow-xs">
-              <MessageCircle className="h-6 w-6 text-[#11342C]" />
+            <div className="bg-[#EC7D55] p-2.5 rounded-2xl border border-[#AB421C]/30 shadow-xs">
+              <MessageCircle className="h-6 w-6 text-[#253341]" />
             </div>
             <div>
-              <h1 className="text-lg font-extrabold text-[#2D1D19] tracking-tight flex items-center gap-2">
+              <h1 className="text-lg font-extrabold text-[#253341] tracking-tight flex items-center gap-2">
                 RAG Web Sohbet
-                <span className="text-xs bg-[#9BCEC1] text-[#11342C] px-2 py-0.5 rounded-full font-bold">
+                <span className="text-xs bg-[#F2A488] text-[#253341] px-2 py-0.5 rounded-full font-bold">
                   PRO
                 </span>
               </h1>
-              <p className="text-xs text-[#5D433E]">
+              <p className="text-xs text-[#3E5164]">
                 Web sitelerinin içeriğini vektör veritabanına aktarıp yapay zekaya öğretin
               </p>
             </div>
@@ -167,24 +167,24 @@ const HomePage: React.FC = () => {
 
       {/* Main Workspace Layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar for Saved Sites (30% Surface #FFB6A6) */}
-        <aside className="w-80 bg-[#FFB6A6]/40 border-r border-[#FFB6A6] flex flex-col shadow-xs">
-          <div className="p-4 border-b border-[#FFB6A6] flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-sm font-bold text-[#2D1D19] uppercase tracking-wider">
-              <Database className="h-4 w-4 text-[#11342C]" />
+        {/* Sidebar for Saved Sites (30% Secondary Surface #DCE3EA) */}
+        <aside className="w-80 bg-[#DCE3EA]/70 border-r border-[#BCC7D2] flex flex-col shadow-xs">
+          <div className="p-4 border-b border-[#BCC7D2] flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-sm font-bold text-[#253341] uppercase tracking-wider">
+              <Database className="h-4 w-4 text-[#3E5164]" />
               Kaydedilen Siteler ({documents.length})
             </h2>
-            <span className="text-xs bg-[#9BCEC1] text-[#11342C] px-2 py-0.5 rounded-lg font-bold">
+            <span className="text-xs bg-[#F2A488] text-[#253341] px-2 py-0.5 rounded-lg font-bold">
               {sessionChunkTotal} Parça
             </span>
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
             {documents.length === 0 ? (
-              <div className="p-6 text-center text-[#5D433E]">
-                <Globe className="h-8 w-8 mx-auto mb-2 opacity-50 text-[#856761]" />
-                <p className="text-sm font-medium">Henüz web sitesi eklenmedi</p>
-                <p className="text-xs mt-1 text-[#856761]">
+              <div className="p-6 text-center text-[#3E5164]">
+                <Globe className="h-8 w-8 mx-auto mb-2 opacity-60 text-[#3E5164]" />
+                <p className="text-sm font-medium text-[#253341]">Henüz web sitesi eklenmedi</p>
+                <p className="text-xs mt-1 text-[#3E5164]">
                   AI ile sohbet etmeye başlamak için üstteki butonla web sitesi ekleyin.
                 </p>
               </div>
@@ -192,22 +192,22 @@ const HomePage: React.FC = () => {
               documents.map((doc, index) => (
                 <div
                   key={index}
-                  className="group flex items-start justify-between p-3 bg-[#FFF7ED] rounded-xl border border-[#FFB6A6] hover:border-[#9BCEC1] transition-all shadow-xs"
+                  className="group flex items-start justify-between p-3 bg-[#F5F9F5] rounded-xl border border-[#BCC7D2] hover:bg-[#DBE6DD]/60 hover:border-[#EC7D55] transition-all duration-200 shadow-xs"
                 >
                   <div className="flex-1 min-w-0 pr-2">
-                    <h4 className="font-semibold text-[#2D1D19] truncate text-xs">
+                    <h4 className="font-semibold text-[#253341] truncate text-xs">
                       {doc.title}
                     </h4>
-                    <p className="text-[11px] text-[#5D433E] truncate mt-0.5">{doc.url}</p>
-                    <div className="flex items-center gap-2 mt-1.5 text-[10px] text-[#856761]">
-                      <span className="bg-[#9BCEC1]/40 text-[#11342C] px-1.5 py-0.5 rounded-md font-medium">
+                    <p className="text-[11px] text-[#3E5164] truncate mt-0.5">{doc.url}</p>
+                    <div className="flex items-center gap-2 mt-1.5 text-[10px] text-[#3E5164]">
+                      <span className="bg-[#DBE6DD] text-[#253341] px-1.5 py-0.5 rounded-md font-medium border border-[#BCC7D2]/60">
                         {doc.chunksCount} parça
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => handleDeleteWebsite(doc.url)}
-                    className="p-1.5 text-[#856761] hover:text-[#2D1D19] hover:bg-[#E69B8B]/40 rounded-lg transition-colors"
+                    className="p-1.5 text-[#3E5164] hover:text-[#AB421C] hover:bg-[#F2A488]/25 rounded-lg transition-colors duration-200"
                     title="Sil"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -218,9 +218,9 @@ const HomePage: React.FC = () => {
           </div>
         </aside>
 
-        {/* Main Content Area (60% Canvas #FFEBD3) */}
-        <main className="flex-1 flex flex-col overflow-hidden p-6 bg-[#FFEBD3]">
-          <div className="flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full bg-[#FFF7ED] rounded-3xl shadow-sm border border-[#FFB6A6]">
+        {/* Main Content Area (60% Dominant Canvas #EDF3EE) */}
+        <main className="flex-1 flex flex-col overflow-hidden p-6 bg-[#EDF3EE]">
+          <div className="flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full bg-[#F5F9F5] rounded-3xl shadow-sm border border-[#BCC7D2]">
             <ChatContainer canChat={documents.length > 0} />
           </div>
         </main>
@@ -241,7 +241,7 @@ const HomePage: React.FC = () => {
             <Card>
               <Card.Header>
                 <Card.Title className="flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-[#11342C]" />
+                  <Layers className="h-5 w-5 text-[#253341]" />
                   Bu Oturumda Kaydedilen Siteler ({documents.length})
                 </Card.Title>
               </Card.Header>
@@ -250,17 +250,17 @@ const HomePage: React.FC = () => {
                   {documents.map((doc, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-[#FFF7ED] rounded-xl border border-[#FFB6A6]"
+                      className="flex items-center justify-between p-3 bg-[#F5F9F5] rounded-xl border border-[#BCC7D2] hover:bg-[#DBE6DD]/40 transition-colors duration-200"
                     >
                       <div className="flex-1 min-w-0 pr-2">
-                        <h4 className="font-semibold text-xs text-[#2D1D19] truncate">
+                        <h4 className="font-semibold text-xs text-[#253341] truncate">
                           {doc.title}
                         </h4>
-                        <p className="text-xs text-[#5D433E] truncate">{doc.url}</p>
+                        <p className="text-xs text-[#3E5164] truncate">{doc.url}</p>
                       </div>
                       <button
                         onClick={() => handleDeleteWebsite(doc.url)}
-                        className="p-1.5 text-[#856761] hover:text-[#2D1D19] rounded-lg hover:bg-[#E69B8B]/30"
+                        className="p-1.5 text-[#3E5164] hover:text-[#AB421C] rounded-lg hover:bg-[#F2A488]/25 transition-colors duration-200"
                         title="Sil"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -275,13 +275,13 @@ const HomePage: React.FC = () => {
           <Card>
             <Card.Header>
               <Card.Title className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-[#11342C]" />
+                <Sparkles className="h-5 w-5 text-[#EC7D55]" />
                 Veritabanı ve Oturum Bilgisi
               </Card.Title>
             </Card.Header>
             <Card.Content>
-              <p className="text-xs text-[#5D433E] leading-relaxed">
-                Bu oturumda toplam <strong className="text-[#2D1D19]">{sessionChunkTotal}</strong>{' '}
+              <p className="text-xs text-[#3E5164] leading-relaxed">
+                Bu oturumda toplam <strong className="text-[#253341]">{sessionChunkTotal}</strong>{' '}
                 parça ({documents.length} site) işlendi. Yapay zeka sorguları doğrudan bu vektör
                 veritabanı parçaları üzerinden yanıtlar üretecektir.
               </p>

@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
   };
 
   const classes = `
-    bg-[#FFB6A6]/20 backdrop-blur-xs rounded-2xl border border-[#FFB6A6]/60 shadow-xs
+    bg-[#DCE3EA]/70 backdrop-blur-xs rounded-2xl border border-[#BCC7D2] shadow-xs transition-colors duration-200
     ${paddingClasses[padding]}
     ${className}
   `;
@@ -40,7 +40,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`border-b border-[#FFB6A6]/50 pb-4 mb-4 ${className}`}>
+    <div className={`border-b border-[#BCC7D2] pb-4 mb-4 ${className}`}>
       {children}
     </div>
   );
@@ -56,7 +56,7 @@ const CardTitle: React.FC<CardTitleProps> = ({
   className = '',
 }) => {
   return (
-    <h3 className={`text-base font-semibold text-[#2D1D19] tracking-tight ${className}`}>
+    <h3 className={`text-base font-semibold text-[#253341] tracking-tight ${className}`}>
       {children}
     </h3>
   );
@@ -72,7 +72,7 @@ const CardContent: React.FC<CardContentProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`text-[#2D1D19] text-sm ${className}`}>
+    <div className={`text-[#253341] text-sm ${className}`}>
       {children}
     </div>
   );

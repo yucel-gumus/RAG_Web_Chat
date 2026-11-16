@@ -106,9 +106,9 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#FFEBD3]">
+    <div className="h-full flex flex-col bg-[#F5F9F5]">
       {/* Header */}
-      <div className="bg-[#FFB6A6]/40 border-b border-[#FFB6A6]/70 p-4 shadow-xs">
+      <div className="bg-[#DCE3EA] border-b border-[#BCC7D2] p-4 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {onBack && (
@@ -124,15 +124,15 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
             )}
 
             <div className="flex items-center gap-2.5">
-              <div className="bg-[#9BCEC1] p-2 rounded-xl border border-[#86BBAE]">
-                <MessageCircle className="h-5 w-5 text-[#11342C]" />
+              <div className="bg-[#EC7D55] p-2 rounded-xl border border-[#AB421C]/30">
+                <MessageCircle className="h-5 w-5 text-[#253341]" />
               </div>
               <div>
-                <h2 className="text-base font-bold text-[#2D1D19] flex items-center gap-1.5">
+                <h2 className="text-base font-bold text-[#253341] flex items-center gap-1.5">
                   KENSAI Sohbet Akışı
-                  <Sparkles className="h-4 w-4 text-[#5D433E]" />
+                  <Sparkles className="h-4 w-4 text-[#3E5164]" />
                 </h2>
-                <p className="text-xs text-[#5D433E]">
+                <p className="text-xs text-[#3E5164]">
                   {canChat ? 'Vektör Veritabanı Aktif' : 'Lütfen önce web sitesi ekleyin'}
                 </p>
               </div>
@@ -163,12 +163,12 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ onBack, canChat }) => {
           {/* Loading Indicator */}
           {loading && (
             <div className="flex gap-3 items-center">
-              <div className="w-9 h-9 rounded-2xl bg-[#FFB6A6] text-[#2D1D19] flex items-center justify-center border border-[#EFA696]">
+              <div className="w-9 h-9 rounded-2xl bg-[#DCE3EA] text-[#253341] flex items-center justify-center border border-[#BCC7D2]">
                 <MessageCircle className="h-4 w-4" />
               </div>
-              <div className="bg-[#FFF7ED] border border-[#FFB6A6] p-3.5 rounded-2xl shadow-xs">
-                <div className="flex items-center gap-2 text-sm text-[#2D1D19] font-medium">
-                  <div className="animate-spin h-4 w-4 border-2 border-[#9BCEC1] border-t-transparent rounded-full"></div>
+              <div className="bg-[#DBE6DD] border border-[#BCC7D2] p-3.5 rounded-2xl shadow-xs">
+                <div className="flex items-center gap-2 text-sm text-[#253341] font-medium">
+                  <div className="animate-spin h-4 w-4 border-2 border-[#EC7D55] border-t-transparent rounded-full"></div>
                   <span>KENSAI web sitelerini tarıyor ve anlıyor...</span>
                 </div>
               </div>

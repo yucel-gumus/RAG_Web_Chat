@@ -17,17 +17,17 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-xs';
+    'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#EDF3EE] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-xs';
 
   const variantClasses = {
     primary:
-      'bg-[#9BCEC1] hover:bg-[#86BBAE] text-[#11342C] font-semibold focus:ring-[#9BCEC1] shadow-sm',
+      'bg-[#EC7D55] hover:bg-[#AB421C] text-[#253341] hover:text-[#F5F9F5] font-semibold focus:ring-[#EC7D55] shadow-sm',
     secondary:
-      'bg-[#FFB6A6] hover:bg-[#FFC8BD] text-[#2D1D19] font-medium border border-[#EFA696] focus:ring-[#FFB6A6]',
+      'bg-[#DCE3EA] hover:bg-[#DBE6DD] text-[#253341] font-medium border border-[#BCC7D2] focus:ring-[#EC7D55]',
     danger:
-      'bg-[#E69B8B] hover:bg-[#D98A7A] text-[#2D1D19] font-medium focus:ring-[#E69B8B]',
+      'bg-[#F5F9F5] hover:bg-[#AB421C] text-[#AB421C] hover:text-[#F5F9F5] font-medium border border-[#AB421C]/50 hover:border-[#AB421C] focus:ring-[#AB421C]',
     ghost:
-      'bg-transparent hover:bg-[#FFB6A6]/40 text-[#2D1D19] focus:ring-[#9BCEC1]',
+      'bg-transparent hover:bg-[#DBE6DD] text-[#253341] focus:ring-[#EC7D55]',
   };
 
   const sizeClasses = {

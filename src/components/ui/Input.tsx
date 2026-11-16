@@ -18,12 +18,12 @@ const Input: React.FC<InputProps> = ({
   const inputId = id || reactId;
 
   const inputClasses = `
-    block w-full px-4 py-2.5 bg-[#FFF7ED] text-[#2D1D19] border rounded-xl shadow-xs transition-all duration-200
-    placeholder:text-[#856761] text-sm
-    focus:outline-none focus:ring-2 focus:ring-[#9BCEC1] focus:border-[#9BCEC1]
+    block w-full px-4 py-2.5 bg-[#F5F9F5] text-[#253341] border rounded-xl shadow-xs transition-all duration-200
+    placeholder:text-[#3E5164]/75 text-sm
+    focus:outline-none focus:ring-2 focus:ring-[#EC7D55] focus:border-[#EC7D55]
     ${error
-      ? 'border-[#E69B8B] text-[#2D1D19] focus:ring-[#E69B8B]'
-      : 'border-[#EFA696]'
+      ? 'border-[#AB421C] text-[#253341] focus:ring-[#AB421C] focus:border-[#AB421C]'
+      : 'border-[#BCC7D2]'
     }
     disabled:opacity-60 disabled:cursor-not-allowed
     ${className}
@@ -34,7 +34,7 @@ const Input: React.FC<InputProps> = ({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold uppercase tracking-wider text-[#5D433E] mb-1.5"
+          className="block text-xs font-semibold uppercase tracking-wider text-[#3E5164] mb-1.5"
         >
           {label}
         </label>
@@ -47,13 +47,13 @@ const Input: React.FC<InputProps> = ({
       />
 
       {error && (
-        <p className="mt-1.5 text-xs font-medium text-[#2D1D19] bg-[#E69B8B]/30 p-2 rounded-lg border border-[#E69B8B]" role="alert">
+        <p className="mt-1.5 text-xs font-medium text-[#AB421C] bg-[#F2A488]/25 p-2 rounded-lg border border-[#AB421C]/60" role="alert">
           {error}
         </p>
       )}
 
       {helperText && !error && (
-        <p className="mt-1.5 text-xs text-[#5D433E]">
+        <p className="mt-1.5 text-xs text-[#3E5164]">
           {helperText}
         </p>
       )}
